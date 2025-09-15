@@ -1,0 +1,25 @@
+{
+    "mcpServers": {
+        "Notion": {
+            "url": "https://mcp.notion.com/mcp"
+        },
+        "serena": {
+            "command": "uvx",
+            "args": [
+            "--from",
+            "git+https://github.com/oraios/serena",
+            "serena-mcp-server",
+            "--context",
+            "ide-assistant"
+            ]
+        },
+        "context7": {
+            "command": "npx",
+            "args": ["-y", "@upstash/context7-mcp@latest"]
+        },
+        "spec-workflow": {
+            "command": "npx",
+            "args": ["-y", "@pimzino/spec-workflow-mcp@latest", "/Users/shota.tanemura/workspace/TermiGroove"]
+        }
+    }
+}

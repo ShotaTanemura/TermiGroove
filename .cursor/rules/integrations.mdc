@@ -1,0 +1,53 @@
+---
+description: Integrations
+globs:
+alwaysApply: true
+---
+<!-- Purpose -->
+<purpose>
+  Implement tasks from a Notion page end-to-end using strict TDD, while keeping specs, tasks, and status synced.
+</purpose>
+
+<!-- Context Inputs -->
+<context>
+  <notion_task_url>{{NOTION_TASK_URL}}</notion_task_url>
+  <project_root>{{PROJECT_ROOT_OR_LEAVE_EMPTY}}</project_root>
+  <repo_info>{{OPTIONAL_SHORT_REPO_DESCRIPTION}}</repo_info>
+</context>
+
+<!-- Tools (MCP servers expected to be configured and authorized in Cursor) -->
+<tools>
+  <tool name="notion-mcp" must_use="true">
+    Use to read and update the task source of truth.
+    Primary calls:
+      - search(query) when you need discovery across workspace.
+      - fetch(url) to load a specific task page by URL.
+      - update-page(pageId|url, properties|content) to reflect progress, status, links.
+  </tool>
+  <tool name="spec-workflow" preferred="true">
+    Use to create/refresh spec, break down tasks, track execution, and record approvals/decisions.
+    Examples:
+      - “Create a spec for &lt;feature&gt;”
+      - “List my specs”
+      - “Execute task &lt;id&gt; in spec &lt;name&gt;”
+  </tool>
+  <tool name="serena" preferred="true">
+    IDE-like, symbol-aware code ops. Favor semantic tools over raw file greps:
+      - find_symbol / find_referencing_symbols
+      - insert_after_symbol / replace_symbol
+      - read_symbol / write_file / create_file
+    Use for precise, minimal edits that keep cycles small.
+  </tool>
+  <tool name="context7" auto="when_code_or_api_needed">
+    Bring up-to-date, version-specific docs and examples for libraries/APIs.
+    Always append “use context7” to prompts that need library docs or snippets.
+  </tool>
+</tools>
+
+<!-- Development Guardrails -->
+<constraints>
+  - Do not implement code without first loading the Notion task page via notion-mcp.fetch({{NOTION_TASK_URL}}).
+  - Prefer minimal context: read only what you need; avoid unnecessary large scans.
+  - Keep a running “Decision Log” in spec-workflow and link it back to the Notion task.
+  - Never bypass tests; never commit while red (failing).
+</constraints>
