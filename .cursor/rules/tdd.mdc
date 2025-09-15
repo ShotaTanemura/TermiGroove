@@ -48,13 +48,16 @@ alwaysApply: true
 </code_editing_rules>
 
 <tooling_defaults>
-  - If Node/TS: use Vitest or Jest; dirs: src/, tests/ or __tests__/
-  - If Python: use pytest; dirs: package/, tests/
-  - If Go: use `go test`; *_test.go in same package
-  - If Rust: use `cargo test`; tests in tests/ or mod tests {}
-  - If Java/Kotlin: use JUnit 5; src/test/java|kotlin
-  - If Ruby: use RSpec; spec/
-  - If none detected: propose a lightweight test stack and initialize it; then continue TDD.
+  - Rust: use `cargo test`; tests in tests/ or mod tests {}
+  - E2E/TUI testing: use **@microsoft/tui-test** for end-to-end terminal UI tests
+    - Config file: `tui-test.config.ts`
+    - Suite dir: `tests/e2e/`
+    - Run locally: `npm run test:e2e`
+    - Run in CI: `.github/workflows/ci.yml` e2e job (uploads traces on failure)
+    - Pre-commit: cargo-husky runs `npm run test:e2e`
+    - Traces: `./tui-traces/` for debugging
+    - Environment: Fixed COLUMNS=120, LINES=40, LC_ALL=C for stability
+    - Retries: 2 retries configured for flaky terminal interactions
 </tooling_defaults>
 
 <persistence>
