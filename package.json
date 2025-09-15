@@ -1,0 +1,15 @@
+{
+  "name": "termigroove",
+  "version": "0.1.0",
+  "description": "TUI Music Player",
+  "type": "module",
+  "scripts": {
+    "pretest:e2e": "cargo build --release",
+    "test:e2e": "tui-test -t",
+    "test:e2e:ci": "tui-test -t"
+  },
+  "devDependencies": {
+    "@microsoft/tui-test": "^0.0.1-rc.5",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,7 @@
+import { test, expect } from "@microsoft/tui-test";
+
+test.use({ program: { file: "git" } });
+
+test("git shows usage message", async ({ terminal }) => {
+  await expect(terminal.getByText("usage: git", { full: true })).toBeVisible();
+});
