@@ -1,0 +1,42 @@
+---
+description: Map of key pages on Notion knowledge base for this project
+globs:
+alwaysApply: false
+---
+<notion>
+    <page>
+        <page_id>2634150965e480a69230ccde9b706a4e</page_id>
+        <page_title>alpha: TermiGroove TUI Music App</page_title>
+        <page_summrize>Root hub that organizes the workspace: links to Overview, Epics, User Stories, Tasks, and Prompts.</page_summrize>
+    </page>
+    <page>
+        <page_id>2634150965e480438b15f73b40bf0574</page_id>
+        <page_title>Overview</page_title>
+        <page_summrize>Vision, problem statement, expected outcomes, target users (20s in Japan), key results, and strategy to deliver a retro-futuristic TUI sampler for real-time co-creation.</page_summrize>
+    </page>
+    <page>
+        <page_id>26e4150965e480b891b1e383410557f1</page_id>
+        <page_title>Epics</page_title>
+        <page_summrize>Container page for the Epics database tracking large initiatives. Includes entries like the MVP-1 epic for loading and playback.</page_summrize>
+    </page>
+    <page>
+        <page_id>26f4150965e4806daf22c835c7311825</page_id>
+        <page_title>User Stories</page_title>
+        <page_summrize>Container page for the User Stories database; stories connect to Epics and define acceptance criteria and performance constraints.</page_summrize>
+    </page>
+    <page>
+        <page_id>26f4150965e480039caeceeaf6f6d64c</page_id>
+        <page_title>Tasks</page_title>
+        <page_summrize>Container page for the Tasks database holding execution-level work; tasks link to stories/epics and track status, due dates, and PRs.</page_summrize>
+    </page>
+    <page>
+        <page_id>26f4150965e480769fa0ebaee3189200</page_id>
+        <page_title>Prompts:</page_title>
+        <page_summrize>Toolkit of reusable prompts and procedures for Epic/Task reviews, kicking off spec-driven TDD workflows, and creating PRs, with detailed connector usage and output formats.</page_summrize>
+    </page>
+    <page>
+        <page_id>26f4150965e480859636c13d2171932c</page_id>
+        <page_title>Task template</page_title>
+        <page_summrize>Blank template page for new tasks with sections for Goal, Why, What, Acceptance Criteria, Technical Notes, and Risks.</page_summrize>
+    </page>
+</notion>
