@@ -1,0 +1,39 @@
+{
+  "id": "approval_1758031977038_e4kqosccm",
+  "title": "Steering: product.md",
+  "filePath": ".spec-workflow/steering/product.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-16T14:12:57.038Z",
+  "category": "steering",
+  "categoryName": "steering",
+  "response": "Feedback Summary (2 comments):\n\nSpecific Text Comments:\n1. \"- **Real‑time Updates**: Event‑driven updates with...\": This application focus on the situation where users play offline togather, so remote session is out of scope now.\n2. \"- **Remote Access**: Simple tunneling/relay to co‑...\": This application focus on the situation where users play offline togather, so remote session is out of scope now.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"This application focus on the situation where users play offline togather, so remote session is out of scope now.\",\n      \"timestamp\": \"2025-09-16T14:23:57.864Z\",\n      \"selectedText\": \"- **Real‑time Updates**: Event‑driven updates within the TUI; future WebSocket bridge for remote sessions.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#ffeb3b\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758032608211_wbexb5md0\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"This application focus on the situation where users play offline togather, so remote session is out of scope now.\",\n      \"timestamp\": \"2025-09-16T14:24:15.214Z\",\n      \"selectedText\": \"- **Remote Access**: Simple tunneling/relay to co‑create across networks.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758032655214_pg1igcw9e\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nSpecific Text Comments:\\n1. \\\"- **Real‑time Updates**: Event‑driven updates with...\\\": This application focus on the situation where users play offline togather, so remote session is out of scope now.\\n2. \\\"- **Remote Access**: Simple tunneling/relay to co‑...\\\": This application focus on the situation where users play offline togather, so remote session is out of scope now.\\n\",\n  \"timestamp\": \"2025-09-16T14:28:02.933Z\"\n}",
+  "respondedAt": "2025-09-16T14:28:02.946Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "This application focus on the situation where users play offline togather, so remote session is out of scope now.",
+      "timestamp": "2025-09-16T14:23:57.864Z",
+      "selectedText": "- **Real‑time Updates**: Event‑driven updates within the TUI; future WebSocket bridge for remote sessions.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#ffeb3b",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758032608211_wbexb5md0"
+    },
+    {
+      "type": "selection",
+      "comment": "This application focus on the situation where users play offline togather, so remote session is out of scope now.",
+      "timestamp": "2025-09-16T14:24:15.214Z",
+      "selectedText": "- **Remote Access**: Simple tunneling/relay to co‑create across networks.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758032655214_pg1igcw9e"
+    }
+  ]
+}
