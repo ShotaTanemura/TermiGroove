@@ -10,9 +10,12 @@ alwaysApply: true
 
 <!-- Context Inputs -->
 <context>
-  <notion_task_url>{{NOTION_TASK_URL}}</notion_task_url>
-  <project_root>{{PROJECT_ROOT_OR_LEAVE_EMPTY}}</project_root>
-  <repo_info>{{OPTIONAL_SHORT_REPO_DESCRIPTION}}</repo_info>
+  <knowledge_base>
+    <notion>
+      This project uses Notion as knowlege base. There are overview of the project, epics, user stories and tasks.
+      <notion_map>.cursor/rules/notion_structure.mdc</notion_map>
+    </notion>
+  </knowledge_base>
 </context>
 
 <!-- Tools (MCP servers expected to be configured and authorized in Cursor) -->

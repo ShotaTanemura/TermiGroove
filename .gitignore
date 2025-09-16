@@ -25,6 +25,7 @@ node_modules
 
 # Cache
 .tui-test/cache
+.serena/cache
 
 # Traces
 tui-traces

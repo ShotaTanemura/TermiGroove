@@ -1,0 +1,33 @@
+{
+  "id": "approval_1758033347475_78n03k6fw",
+  "title": "Steering: tech.md",
+  "filePath": ".spec-workflow/steering/tech.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-16T14:35:47.475Z",
+  "category": "steering",
+  "categoryName": "steering",
+  "response": "Feedback Summary (2 comments):\n\nGeneral Comments:\n1. This project uses:\n- cargo-husky: pre-commit harness for Rust\n- GitHub actions: as a CI tool\n\nSpecific Text Comments:\n1. \"## Technical Decisions & Rationale\n1. **Rust for p...\": As a technical decisions not yet applied in a codebase:\n- ratatui (https://github.com/ratatui/ratatui) : TUI framework\n- ratatui-explorer (https://github.com/tatounee/ratatui-explorer): For screen to select samples will be loaded\n- ratatui-widgets (https://github.com/joshka/ratatui-widgets): additional elements to make TUI cool\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"This project uses:\\n- cargo-husky: pre-commit harness for Rust\\n- GitHub actions: as a CI tool\",\n      \"timestamp\": \"2025-09-16T14:40:45.654Z\",\n      \"id\": \"comment_1758033645654_tn9fhdxrb\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"As a technical decisions not yet applied in a codebase:\\n- ratatui (https://github.com/ratatui/ratatui) : TUI framework\\n- ratatui-explorer (https://github.com/tatounee/ratatui-explorer): For screen to select samples will be loaded\\n- ratatui-widgets (https://github.com/joshka/ratatui-widgets): additional elements to make TUI cool\",\n      \"timestamp\": \"2025-09-16T14:44:25.631Z\",\n      \"selectedText\": \"## Technical Decisions & Rationale\\n1. **Rust for performance and portability**: Low-latency input/render loop is a good fit.\\n2. **TUI-first UX**: Keyboard-driven workflows match the product’s simplicity and flow principles.\\n3. **E2E via `@microsoft/tui-test`**: High-confidence testing against compiled binary behavior.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758033865631_53g6fcf07\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nGeneral Comments:\\n1. This project uses:\\n- cargo-husky: pre-commit harness for Rust\\n- GitHub actions: as a CI tool\\n\\nSpecific Text Comments:\\n1. \\\"## Technical Decisions & Rationale\\n1. **Rust for p...\\\": As a technical decisions not yet applied in a codebase:\\n- ratatui (https://github.com/ratatui/ratatui) : TUI framework\\n- ratatui-explorer (https://github.com/tatounee/ratatui-explorer): For screen to select samples will be loaded\\n- ratatui-widgets (https://github.com/joshka/ratatui-widgets): additional elements to make TUI cool\\n\",\n  \"timestamp\": \"2025-09-16T14:44:28.974Z\"\n}",
+  "respondedAt": "2025-09-16T14:44:28.985Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "This project uses:\n- cargo-husky: pre-commit harness for Rust\n- GitHub actions: as a CI tool",
+      "timestamp": "2025-09-16T14:40:45.654Z",
+      "id": "comment_1758033645654_tn9fhdxrb"
+    },
+    {
+      "type": "selection",
+      "comment": "As a technical decisions not yet applied in a codebase:\n- ratatui (https://github.com/ratatui/ratatui) : TUI framework\n- ratatui-explorer (https://github.com/tatounee/ratatui-explorer): For screen to select samples will be loaded\n- ratatui-widgets (https://github.com/joshka/ratatui-widgets): additional elements to make TUI cool",
+      "timestamp": "2025-09-16T14:44:25.631Z",
+      "selectedText": "## Technical Decisions & Rationale\n1. **Rust for performance and portability**: Low-latency input/render loop is a good fit.\n2. **TUI-first UX**: Keyboard-driven workflows match the product’s simplicity and flow principles.\n3. **E2E via `@microsoft/tui-test`**: High-confidence testing against compiled binary behavior.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758033865631_53g6fcf07"
+    }
+  ]
+}
