@@ -1,0 +1,39 @@
+{
+  "id": "approval_1758043594729_8trb3c12x",
+  "title": "Design: file-navigation-in-tui",
+  "filePath": ".spec-workflow/specs/file-navigation-in-tui/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-16T17:26:34.729Z",
+  "category": "spec",
+  "categoryName": "file-navigation-in-tui",
+  "response": "Feedback Summary (2 comments):\n\nSpecific Text Comments:\n1. \"- Application runs a synchronous event loop readin...\": For this application, asynchronous split-loop into three such as MVU UI loop for deterministic, pure rendering and input handling, real-time audio thread responsible for device callbacks, transport, scheduling, and mixing and an I/O/decoding pool for file access, decoding, and waveform precomputation.\n2. \"## Testing Strategy\n- E2E tests using `@microsoft/...\": Also, use unit tests for testing features added\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"For this application, asynchronous split-loop into three such as MVU UI loop for deterministic, pure rendering and input handling, real-time audio thread responsible for device callbacks, transport, scheduling, and mixing and an I/O/decoding pool for file access, decoding, and waveform precomputation.\",\n      \"timestamp\": \"2025-09-16T17:35:55.018Z\",\n      \"selectedText\": \"- Application runs a synchronous event loop reading crossterm events and rendering frames.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758044155018_k50sojbyo\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Also, use unit tests for testing features added\",\n      \"timestamp\": \"2025-09-16T17:37:49.501Z\",\n      \"selectedText\": \"## Testing Strategy\\n- E2E tests using `@microsoft/tui-test` under `tests/e2e/` with `tui-test.config.ts`.\\n- Scenarios mirror Acceptance Criteria (initial render, focus toggle, selection, remove, bounds, enter to pads, quit).\\n- Use a temporary test directory with files/dirs to simulate explorer interactions; mock/adapter for `ratatui_explorer` if needed.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758044269501_fsd8526pa\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nSpecific Text Comments:\\n1. \\\"- Application runs a synchronous event loop readin...\\\": For this application, asynchronous split-loop into three such as MVU UI loop for deterministic, pure rendering and input handling, real-time audio thread responsible for device callbacks, transport, scheduling, and mixing and an I/O/decoding pool for file access, decoding, and waveform precomputation.\\n2. \\\"## Testing Strategy\\n- E2E tests using `@microsoft/...\\\": Also, use unit tests for testing features added\\n\",\n  \"timestamp\": \"2025-09-16T17:37:58.218Z\"\n}",
+  "respondedAt": "2025-09-16T17:37:58.234Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "For this application, asynchronous split-loop into three such as MVU UI loop for deterministic, pure rendering and input handling, real-time audio thread responsible for device callbacks, transport, scheduling, and mixing and an I/O/decoding pool for file access, decoding, and waveform precomputation.",
+      "timestamp": "2025-09-16T17:35:55.018Z",
+      "selectedText": "- Application runs a synchronous event loop reading crossterm events and rendering frames.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758044155018_k50sojbyo"
+    },
+    {
+      "type": "selection",
+      "comment": "Also, use unit tests for testing features added",
+      "timestamp": "2025-09-16T17:37:49.501Z",
+      "selectedText": "## Testing Strategy\n- E2E tests using `@microsoft/tui-test` under `tests/e2e/` with `tui-test.config.ts`.\n- Scenarios mirror Acceptance Criteria (initial render, focus toggle, selection, remove, bounds, enter to pads, quit).\n- Use a temporary test directory with files/dirs to simulate explorer interactions; mock/adapter for `ratatui_explorer` if needed.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758044269501_fsd8526pa"
+    }
+  ]
+}
