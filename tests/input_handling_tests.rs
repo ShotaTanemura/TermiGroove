@@ -78,4 +78,3 @@ fn right_pane_remove_space_delete_d() {
     handle_event(&mut state, key(KeyCode::Char('d'))).unwrap();
     assert_eq!(state.selection.items.len(), 1);
 }
-

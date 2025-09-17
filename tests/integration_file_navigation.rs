@@ -88,4 +88,3 @@ fn right_pane_empty_list_noops() {
     assert_eq!(state.selection.right_idx, 0);
     assert_eq!(state.status_message, before_status);
 }
-
