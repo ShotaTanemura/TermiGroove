@@ -1,0 +1,21 @@
+{
+  "id": "approval_1758044883471_i9spmxgjt",
+  "title": "Tasks: file-navigation-in-tui",
+  "filePath": ".spec-workflow/specs/file-navigation-in-tui/tasks.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-16T17:48:03.471Z",
+  "category": "spec",
+  "categoryName": "file-navigation-in-tui",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. Apply Test-driven development to task workflow.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"Apply Test-driven development to task workflow.\",\n      \"timestamp\": \"2025-09-16T17:54:49.005Z\",\n      \"id\": \"comment_1758045289005_foh8txdjy\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. Apply Test-driven development to task workflow.\\n\\n\",\n  \"timestamp\": \"2025-09-16T17:54:49.853Z\"\n}",
+  "respondedAt": "2025-09-16T17:54:49.871Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "Apply Test-driven development to task workflow.",
+      "timestamp": "2025-09-16T17:54:49.005Z",
+      "id": "comment_1758045289005_foh8txdjy"
+    }
+  ]
+}
