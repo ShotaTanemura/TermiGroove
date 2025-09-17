@@ -4,6 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1"
+crossterm = "0.27"
+ratatui = { version = "0.29", default-features = false, features = ["crossterm"] }
+ratatui-explorer = { git = "https://github.com/tatounee/ratatui-explorer" }
+tui-big-text = { git = "https://github.com/joshka/tui-widgets", package = "tui-big-text" }
 
 [dev-dependencies.cargo-husky]
 version = "1"
