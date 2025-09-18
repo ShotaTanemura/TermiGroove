@@ -1,0 +1,33 @@
+{
+  "id": "approval_1758123385859_hre0tcndu",
+  "title": "Design approval: playback-samples-with-keys",
+  "filePath": ".spec-workflow/specs/playback-samples-with-keys/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-17T15:36:25.859Z",
+  "category": "spec",
+  "categoryName": "playback-samples-with-keys",
+  "response": "Feedback Summary (2 comments):\n\nGeneral Comments:\n1. rodio (github.com/RustAudio/rodio) whch is the Rust library for playback should be used to load wav file and playback a sample.\n\nSpecific Text Comments:\n1. \"FileNavigation\": It is important to ensure that file navigation ui is already implemented because dupulication of implementation.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"It is important to ensure that file navigation ui is already implemented because dupulication of implementation.\",\n      \"timestamp\": \"2025-09-18T12:16:38.511Z\",\n      \"selectedText\": \"FileNavigation\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758197798511_cj42r8648\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"rodio (github.com/RustAudio/rodio) whch is the Rust library for playback should be used to load wav file and playback a sample.\",\n      \"timestamp\": \"2025-09-18T12:19:13.561Z\",\n      \"id\": \"comment_1758197953561_d7w3szofq\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nGeneral Comments:\\n1. rodio (github.com/RustAudio/rodio) whch is the Rust library for playback should be used to load wav file and playback a sample.\\n\\nSpecific Text Comments:\\n1. \\\"FileNavigation\\\": It is important to ensure that file navigation ui is already implemented because dupulication of implementation.\\n\",\n  \"timestamp\": \"2025-09-18T12:20:32.580Z\"\n}",
+  "respondedAt": "2025-09-18T12:20:32.593Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "It is important to ensure that file navigation ui is already implemented because dupulication of implementation.",
+      "timestamp": "2025-09-18T12:16:38.511Z",
+      "selectedText": "FileNavigation",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758197798511_cj42r8648"
+    },
+    {
+      "type": "general",
+      "comment": "rodio (github.com/RustAudio/rodio) whch is the Rust library for playback should be used to load wav file and playback a sample.",
+      "timestamp": "2025-09-18T12:19:13.561Z",
+      "id": "comment_1758197953561_d7w3szofq"
+    }
+  ]
+}

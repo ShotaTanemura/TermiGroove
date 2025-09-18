@@ -1,0 +1,21 @@
+{
+  "id": "approval_1758121074555_ugqmdn43i",
+  "title": "Requirements approval: playback-samples-with-keys",
+  "filePath": ".spec-workflow/specs/playback-samples-with-keys/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-17T14:57:54.555Z",
+  "category": "spec",
+  "categoryName": "playback-samples-with-keys",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. Add two more acceptance criterias written below:\n\n- **Given** more than two samples are loaded, **when** an user presses multiple keys at the same time, **then** samples associated with these keys are played simultaneously in overlapping layers.\n- **Given** an user plays a sample and it is not finished yet, **when** a user presses the key mapped the sample being played now again, **then**  sounds of the sample overlaps partialy.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"Add two more acceptance criterias written below:\\n\\n- **Given** more than two samples are loaded, **when** an user presses multiple keys at the same time, **then** samples associated with these keys are played simultaneously in overlapping layers.\\n- **Given** an user plays a sample and it is not finished yet, **when** a user presses the key mapped the sample being played now again, **then**  sounds of the sample overlaps partialy.\",\n      \"timestamp\": \"2025-09-17T15:23:01.837Z\",\n      \"id\": \"comment_1758122581837_gzwa0w2pt\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. Add two more acceptance criterias written below:\\n\\n- **Given** more than two samples are loaded, **when** an user presses multiple keys at the same time, **then** samples associated with these keys are played simultaneously in overlapping layers.\\n- **Given** an user plays a sample and it is not finished yet, **when** a user presses the key mapped the sample being played now again, **then**  sounds of the sample overlaps partialy.\\n\\n\",\n  \"timestamp\": \"2025-09-17T15:23:04.070Z\"\n}",
+  "respondedAt": "2025-09-17T15:23:04.087Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "Add two more acceptance criterias written below:\n\n- **Given** more than two samples are loaded, **when** an user presses multiple keys at the same time, **then** samples associated with these keys are played simultaneously in overlapping layers.\n- **Given** an user plays a sample and it is not finished yet, **when** a user presses the key mapped the sample being played now again, **then**  sounds of the sample overlaps partialy.",
+      "timestamp": "2025-09-17T15:23:01.837Z",
+      "id": "comment_1758122581837_gzwa0w2pt"
+    }
+  ]
+}
