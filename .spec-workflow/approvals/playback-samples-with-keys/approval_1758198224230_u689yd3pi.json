@@ -1,0 +1,27 @@
+{
+  "id": "approval_1758198224230_u689yd3pi",
+  "title": "Design approval (rev 2): playback-samples-with-keys",
+  "filePath": ".spec-workflow/specs/playback-samples-with-keys/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-18T12:23:44.230Z",
+  "category": "spec",
+  "categoryName": "playback-samples-with-keys",
+  "response": "Feedback Summary (1 comments):\n\nSpecific Text Comments:\n1. \"For each `play`, create a new `rodio::Sink` and de...\": Once samples are loaded and decoded, they should be cached because they are played many times again and again, so the overhead to decode should be got rid of.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Once samples are loaded and decoded, they should be cached because they are played many times again and again, so the overhead to decode should be got rid of.\",\n      \"timestamp\": \"2025-09-18T12:34:48.015Z\",\n      \"selectedText\": \"For each `play`, create a new `rodio::Sink` and decode the `.wav` via `rodio::Decoder` over a `std::fs::File` reader.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#ffeb3b\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758198790611_fj2p2127g\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nSpecific Text Comments:\\n1. \\\"For each `play`, create a new `rodio::Sink` and de...\\\": Once samples are loaded and decoded, they should be cached because they are played many times again and again, so the overhead to decode should be got rid of.\\n\",\n  \"timestamp\": \"2025-09-18T12:34:50.232Z\"\n}",
+  "respondedAt": "2025-09-18T12:34:50.242Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "Once samples are loaded and decoded, they should be cached because they are played many times again and again, so the overhead to decode should be got rid of.",
+      "timestamp": "2025-09-18T12:34:48.015Z",
+      "selectedText": "For each `play`, create a new `rodio::Sink` and decode the `.wav` via `rodio::Decoder` over a `std::fs::File` reader.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#ffeb3b",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758198790611_fj2p2127g"
+    }
+  ]
+}

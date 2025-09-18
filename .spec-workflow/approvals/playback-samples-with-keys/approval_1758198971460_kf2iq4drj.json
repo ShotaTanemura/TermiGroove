@@ -1,0 +1,45 @@
+{
+  "id": "approval_1758198971460_kf2iq4drj",
+  "title": "Design approval (rev 3): playback-samples-with-keys",
+  "filePath": ".spec-workflow/specs/playback-samples-with-keys/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-18T12:36:11.460Z",
+  "category": "spec",
+  "categoryName": "playback-samples-with-keys",
+  "response": "Feedback Summary (3 comments):\n\nGeneral Comments:\n1. Run audio on its own thread; UI sends Play(key) over a channel because separating UI and audio keeps the terminal smooth and the sound glitch-free.\n\nSpecific Text Comments:\n1. \"keyed by file path.\": The keys of decoded samples should be just keys displayed on a pad because file path is no more needed once it is used to load wav files.\n2. \"`play(&self, key: char, path: &Path) -> Result<()>...\": Remove path from arguments of AudioEngine.play() because file path is only used when loading wav files. Once they are loaded, decoded and cached, file path is not used other than be displayed on an each pad.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"The keys of decoded samples should be just keys displayed on a pad because file path is no more needed once it is used to load wav files.\",\n      \"timestamp\": \"2025-09-18T12:49:23.639Z\",\n      \"selectedText\": \"keyed by file path.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758199763639_flc2jvxvd\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Remove path from arguments of AudioEngine.play() because file path is only used when loading wav files. Once they are loaded, decoded and cached, file path is not used other than be displayed on an each pad.\",\n      \"timestamp\": \"2025-09-18T12:51:49.223Z\",\n      \"selectedText\": \"`play(&self, key: char, path: &Path) -> Result<()>` starts a new voice immediately.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758199909223_kmi1wgxot\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"Run audio on its own thread; UI sends Play(key) over a channel because separating UI and audio keeps the terminal smooth and the sound glitch-free.\",\n      \"timestamp\": \"2025-09-18T12:59:39.174Z\",\n      \"id\": \"comment_1758200379174_00as8giiz\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (3 comments):\\n\\nGeneral Comments:\\n1. Run audio on its own thread; UI sends Play(key) over a channel because separating UI and audio keeps the terminal smooth and the sound glitch-free.\\n\\nSpecific Text Comments:\\n1. \\\"keyed by file path.\\\": The keys of decoded samples should be just keys displayed on a pad because file path is no more needed once it is used to load wav files.\\n2. \\\"`play(&self, key: char, path: &Path) -> Result<()>...\\\": Remove path from arguments of AudioEngine.play() because file path is only used when loading wav files. Once they are loaded, decoded and cached, file path is not used other than be displayed on an each pad.\\n\",\n  \"timestamp\": \"2025-09-18T13:02:05.688Z\"\n}",
+  "respondedAt": "2025-09-18T13:02:05.700Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "The keys of decoded samples should be just keys displayed on a pad because file path is no more needed once it is used to load wav files.",
+      "timestamp": "2025-09-18T12:49:23.639Z",
+      "selectedText": "keyed by file path.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758199763639_flc2jvxvd"
+    },
+    {
+      "type": "selection",
+      "comment": "Remove path from arguments of AudioEngine.play() because file path is only used when loading wav files. Once they are loaded, decoded and cached, file path is not used other than be displayed on an each pad.",
+      "timestamp": "2025-09-18T12:51:49.223Z",
+      "selectedText": "`play(&self, key: char, path: &Path) -> Result<()>` starts a new voice immediately.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758199909223_kmi1wgxot"
+    },
+    {
+      "type": "general",
+      "comment": "Run audio on its own thread; UI sends Play(key) over a channel because separating UI and audio keeps the terminal smooth and the sound glitch-free.",
+      "timestamp": "2025-09-18T12:59:39.174Z",
+      "id": "comment_1758200379174_00as8giiz"
+    }
+  ]
+}

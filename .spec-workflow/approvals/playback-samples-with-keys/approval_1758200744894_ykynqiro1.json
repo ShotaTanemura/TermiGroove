@@ -1,0 +1,21 @@
+{
+  "id": "approval_1758200744894_ykynqiro1",
+  "title": "Design approval (rev 4): playback-samples-with-keys",
+  "filePath": ".spec-workflow/specs/playback-samples-with-keys/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-18T13:05:44.894Z",
+  "category": "spec",
+  "categoryName": "playback-samples-with-keys",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. I mean firing sample playback once per physical press; ignore auto-repeat events within 100ms for the same key.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"I mean firing sample playback once per physical press; ignore auto-repeat events within 100ms for the same key.\",\n      \"timestamp\": \"2025-09-18T13:26:21.372Z\",\n      \"id\": \"comment_1758201981372_6qbk5oqey\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. I mean firing sample playback once per physical press; ignore auto-repeat events within 100ms for the same key.\\n\\n\",\n  \"timestamp\": \"2025-09-18T13:27:33.305Z\"\n}",
+  "respondedAt": "2025-09-18T13:27:33.319Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "I mean firing sample playback once per physical press; ignore auto-repeat events within 100ms for the same key.",
+      "timestamp": "2025-09-18T13:26:21.372Z",
+      "id": "comment_1758201981372_6qbk5oqey"
+    }
+  ]
+}
