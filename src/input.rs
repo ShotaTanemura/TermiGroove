@@ -1,6 +1,9 @@
 use ratatui::crossterm::event::{Event, KeyCode, KeyEvent};
 
 use crate::app_state::AppState;
+use crate::app_state::Mode;
+use crate::audio::AudioCommand;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn handle_event(_state: &mut AppState, _event: Event) -> anyhow::Result<()> {
     match _event {
@@ -14,21 +17,20 @@ pub fn handle_event(_state: &mut AppState, _event: Event) -> anyhow::Result<()> 
 }
 
 fn handle_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<()> {
-    match key.code {
-        KeyCode::Tab => {
-            state.toggle_focus();
-            state.status_message = state.focus_status_message();
-        }
-        KeyCode::Enter => {
-            if state.selection.items.is_empty() {
-                state.status_message = "Select at least one file first".to_string();
-            } else {
-                state.mode = crate::app_state::Mode::Pads;
-                state.status_message =
-                    "[Pads] Press Esc to go back. Press Q/W/…/< to trigger.".to_string();
+    match state.mode {
+        Mode::Browse => match key.code {
+            KeyCode::Tab => {
+                state.toggle_focus();
+                state.status_message = state.focus_status_message();
             }
-        }
-        _ => route_key_to_focused_pane(state, key)?,
+            KeyCode::Enter => {
+                if let Err(_e) = state.enter_pads() {
+                    // status_message already set inside enter_pads on error paths
+                }
+            }
+            _ => route_key_to_focused_pane(state, key)?,
+        },
+        Mode::Pads => handle_pads_key_event(state, key)?,
     }
     Ok(())
 }
@@ -90,6 +92,37 @@ fn handle_right_pane_key(_state: &mut AppState, _key: KeyEvent) -> anyhow::Resul
             if _state.selection.items.len() < before_len {
                 _state.status_message = _state.selection.status.clone();
             }
+            Ok(())
+        }
+        _ => Ok(()),
+    }
+}
+
+fn handle_pads_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<()> {
+    match key.code {
+        KeyCode::Esc => {
+            state.mode = Mode::Browse;
+            state.status_message = "Back to browse".to_string();
+            Ok(())
+        }
+        KeyCode::Char(c) => {
+            let k = c.to_ascii_lowercase();
+            if !state.pads.key_to_slot.contains_key(&k) {
+                return Ok(());
+            }
+            // Debounce auto-repeat within 100ms
+            let now_ms = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_millis();
+            if let Some(prev) = state.pads.last_press_ms.get(&k).cloned()
+                && now_ms.saturating_sub(prev) < 100
+            {
+                return Ok(());
+            }
+            state.pads.last_press_ms.insert(k, now_ms);
+            state.pads.active_keys.insert(k);
+            let _ = state.audio_tx.send(AudioCommand::Play { key: k });
             Ok(())
         }
         _ => Ok(()),
