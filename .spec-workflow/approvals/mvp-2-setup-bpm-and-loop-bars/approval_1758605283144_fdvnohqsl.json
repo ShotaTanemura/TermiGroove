@@ -1,0 +1,27 @@
+{
+  "id": "approval_1758605283144_fdvnohqsl",
+  "title": "Approve design for spec mvp-2-setup-bpm-and-loop-bars",
+  "filePath": ".spec-workflow/specs/mvp-2-setup-bpm-and-loop-bars/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-23T05:28:03.144Z",
+  "category": "spec",
+  "categoryName": "mvp-2-setup-bpm-and-loop-bars",
+  "response": "Feedback Summary (2 comments):\n\nGeneral Comments:\n1. Technical considerations regarding the input area used for entering BPM and bars are insufficient. Furthermore, redesign the input area implementation assuming the use of tui_input (https://docs.rs/tui-input/latest/tui_input/).\n2. When implementing pop-ups, use tui-popup (https://crates.io/crates/tui-popup) from tui_widgets (https://docs.rs/tui-widgets/latest/tui_widgets/) as the basis. Clearly state this in the documentation and proceed with the design accordingly.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"Technical considerations regarding the input area used for entering BPM and bars are insufficient. Furthermore, redesign the input area implementation assuming the use of tui_input (https://docs.rs/tui-input/latest/tui_input/).\",\n      \"timestamp\": \"2025-09-23T05:37:49.006Z\",\n      \"id\": \"comment_1758605869006_ndh2xmpfa\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"When implementing pop-ups, use tui-popup (https://crates.io/crates/tui-popup) from tui_widgets (https://docs.rs/tui-widgets/latest/tui_widgets/) as the basis. Clearly state this in the documentation and proceed with the design accordingly.\",\n      \"timestamp\": \"2025-09-23T05:41:07.396Z\",\n      \"id\": \"comment_1758606067396_usezf2jfp\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nGeneral Comments:\\n1. Technical considerations regarding the input area used for entering BPM and bars are insufficient. Furthermore, redesign the input area implementation assuming the use of tui_input (https://docs.rs/tui-input/latest/tui_input/).\\n2. When implementing pop-ups, use tui-popup (https://crates.io/crates/tui-popup) from tui_widgets (https://docs.rs/tui-widgets/latest/tui_widgets/) as the basis. Clearly state this in the documentation and proceed with the design accordingly.\\n\\n\",\n  \"timestamp\": \"2025-09-23T05:41:08.612Z\"\n}",
+  "respondedAt": "2025-09-23T05:41:08.621Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "Technical considerations regarding the input area used for entering BPM and bars are insufficient. Furthermore, redesign the input area implementation assuming the use of tui_input (https://docs.rs/tui-input/latest/tui_input/).",
+      "timestamp": "2025-09-23T05:37:49.006Z",
+      "id": "comment_1758605869006_ndh2xmpfa"
+    },
+    {
+      "type": "general",
+      "comment": "When implementing pop-ups, use tui-popup (https://crates.io/crates/tui-popup) from tui_widgets (https://docs.rs/tui-widgets/latest/tui_widgets/) as the basis. Clearly state this in the documentation and proceed with the design accordingly.",
+      "timestamp": "2025-09-23T05:41:07.396Z",
+      "id": "comment_1758606067396_usezf2jfp"
+    }
+  ]
+}

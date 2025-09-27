@@ -1,0 +1,39 @@
+{
+  "id": "approval_1758573670027_x64f2z752",
+  "title": "Approve requirements for spec mvp-2-setup-bpm-and-loop-bars",
+  "filePath": ".spec-workflow/specs/mvp-2-setup-bpm-and-loop-bars/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-22T20:41:10.027Z",
+  "category": "spec",
+  "categoryName": "mvp-2-setup-bpm-and-loop-bars",
+  "response": "Feedback Summary (2 comments):\n\nSpecific Text Comments:\n1. \"Cancel and the user presses Enter or Space OR pres...\": \"Cancel and the user presses Enter or Space OR presses Esc\" should be changed to \"Cancel and the user presses Enter or presses Esc\"\n2. \"presses Enter or Space\": \"presses Enter or Space\" should be changed to \"presses Enter\"\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"\\\"Cancel and the user presses Enter or Space OR presses Esc\\\" should be changed to \\\"Cancel and the user presses Enter or presses Esc\\\"\",\n      \"timestamp\": \"2025-09-23T05:11:44.998Z\",\n      \"selectedText\": \"Cancel and the user presses Enter or Space OR presses Esc\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758604304998_x8xk4bcob\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"\\\"presses Enter or Space\\\" should be changed to \\\"presses Enter\\\"\",\n      \"timestamp\": \"2025-09-23T05:13:49.526Z\",\n      \"selectedText\": \"presses Enter or Space\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1758604429526_y33yhjnj4\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nSpecific Text Comments:\\n1. \\\"Cancel and the user presses Enter or Space OR pres...\\\": \\\"Cancel and the user presses Enter or Space OR presses Esc\\\" should be changed to \\\"Cancel and the user presses Enter or presses Esc\\\"\\n2. \\\"presses Enter or Space\\\": \\\"presses Enter or Space\\\" should be changed to \\\"presses Enter\\\"\\n\",\n  \"timestamp\": \"2025-09-23T05:14:42.690Z\"\n}",
+  "respondedAt": "2025-09-23T05:14:42.722Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "\"Cancel and the user presses Enter or Space OR presses Esc\" should be changed to \"Cancel and the user presses Enter or presses Esc\"",
+      "timestamp": "2025-09-23T05:11:44.998Z",
+      "selectedText": "Cancel and the user presses Enter or Space OR presses Esc",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758604304998_x8xk4bcob"
+    },
+    {
+      "type": "selection",
+      "comment": "\"presses Enter or Space\" should be changed to \"presses Enter\"",
+      "timestamp": "2025-09-23T05:13:49.526Z",
+      "selectedText": "presses Enter or Space",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1758604429526_y33yhjnj4"
+    }
+  ]
+}
