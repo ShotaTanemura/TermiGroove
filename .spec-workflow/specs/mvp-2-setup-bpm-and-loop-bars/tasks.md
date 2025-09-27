@@ -1,0 +1,114 @@
+# Tasks – mvp-2-setup-bpm-and-loop-bars
+
+- [x] 1. Add BPM/bars and focus/popup state to `AppState`
+  - Files: `src/app_state.rs`
+  - Add `bpm: u16`, `bars: u16`, `is_popup_open: bool`, `focus: FocusTarget`, `draft_bpm: String`, `draft_bars: String`
+  - Provide `get_*/set_*` and `open_popup/close_popup(apply: bool)` APIs; set sane defaults (e.g., bpm=120, bars=16)
+  - _Leverage: existing `AppState` pattern_
+  - _Requirements: 1, 2, 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust core developer (state management)
+    - Task: Extend `AppState` with bpm/bars, popup flags, focus enum, and draft fields; expose safe mutation/getter methods; add clamping helpers for bpm/bars.
+    - Restrictions: Keep single-responsibility; no UI logic; no key handling here; avoid panics.
+    - _Leverage: `src/app_state.rs`
+    - _Requirements: 1,2,3,4
+    - Success: Unit tests compile with new APIs; defaults visible through getters; clamping helpers cover ranges (BPM 20..=300, Bars 1..=256).
+    - Instructions: Mark this task in-progress before editing; mark complete when tests are added and pass._
+
+- [x] 2. Implement input focus model and popup lifecycle in `input.rs`
+  - Files: `src/input.rs`
+  - Map arrow keys to focus the summary box; Enter to open popup; Esc/Cancel to discard; OK (Enter) to confirm; implement traversal bpm→bars→OK with OK↔Cancel via Left/Right; digits/backspace/delete/left/right to edit active draft
+  - _Leverage: `AppState` focus model and draft fields_
+  - _Requirements: 1, 2, 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust input handling developer
+    - Task: Add key handling to drive focus transitions and popup lifecycle; route editing keys to active draft (digits only) and ignore non-digits; clamp on confirm.
+    - Restrictions: No rendering; avoid deep nesting; early-return guards.
+    - _Leverage: `src/input.rs`, `src/app_state.rs`
+    - _Requirements: 1,2,3,4
+    - Success: Unit/integration tests prove traversal loops and correct confirm/cancel semantics.
+    - Instructions: Mark task in-progress before coding; mark complete when tests pass locally._
+
+- [x] 3. Render summary box per design in `ui.rs`
+  - Files: `src/ui.rs`
+  - Draw top-left summary box with green border; vertical `bpm:` and `bars:`; labels left-aligned and numbers right-aligned with maximum spacing; show focus ring and selected highlight states
+  - _Leverage: existing UI composition utilities (if any)_
+  - _Requirements: 1_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust TUI developer
+    - Task: Implement summary box rendering exactly as specified; ensure state-driven visuals (normal/focused/selected).
+    - Restrictions: Keep rendering pure; no state mutation.
+    - _Leverage: `src/ui.rs`, `AppState`
+    - _Requirements: 1
+    - Success: E2E asserts see the box and updated numbers; focus ring visible on navigation.
+    - Instructions: Mark task in-progress; mark complete when E2E for visibility passes._
+
+- [x] 4. Integrate `tui-input` for BPM/bars fields — Added dependency, hooked InputRequest handling for digits, and render popup inputs with current drafts.
+  - Files: `Cargo.toml`, `src/app_state.rs`, `src/input.rs`, `src/ui.rs`
+  - Add `tui-input` dependency and wire two inputs for BPM and Bars in the popup; digits-only behavior; caret left/right; backspace/delete editing
+  - _Leverage: `https://docs.rs/tui-input/latest/tui_input/`_
+  - _Requirements: 3_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust UI widgets integrator
+    - Task: Instantiate and render `tui_input::Input` instances bound to `draft_bpm`/`draft_bars`; keep rendering/interaction consistent with focus model.
+    - Restrictions: Do not introduce global mutable state; respect current theming.
+    - _Leverage: `Cargo.toml`, `src/ui.rs`, `AppState`
+    - _Requirements: 3
+    - Success: E2E can type digits and see them reflected; non-digits ignored; caret moves with arrows.
+    - Instructions: Mark in-progress before changes; complete when E2E editing passes._
+
+- [x] 5. Integrate `tui-popup` for the modal
+  - Files: `Cargo.toml`, `src/ui.rs`
+  - Add `tui-popup` dependency and render centered modal with double border; layout: labels left, inputs right; bottom `[OK] [Cancel]` with focus highlight
+  - _Leverage: `https://crates.io/crates/tui-popup`, `https://docs.rs/tui-widgets/latest/tui_widgets/`_
+  - _Requirements: 2, 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust TUI popup implementer
+    - Task: Compose `tui-popup` with the existing UI; render inputs and buttons; reflect focus states; anchor visually to summary box.
+    - Restrictions: Keep popup isolated; no business logic in rendering.
+    - _Leverage: `src/ui.rs`, `AppState`
+    - _Requirements: 2,3,4
+    - Success: E2E sees popup open/close; OK applies; Cancel/Esc discards; styles match design.
+    - Instructions: Mark in-progress; complete when E2E confirm/cancel pass._
+
+- [x] 6. Add unit tests for clamping and state transitions
+  - Files: `tests/app_state_tests.rs`
+  - Cover clamping of bpm/bars; `open_popup/close_popup(apply)` behavior; defaults
+  - _Leverage: existing Rust test setup_
+  - _Requirements: 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust unit test engineer
+    - Task: Add focused unit tests for state logic and clamping.
+    - Restrictions: No UI rendering assertions here.
+    - _Leverage: `tests/app_state_tests.rs`
+    - _Requirements: 3,4
+    - Success: Tests green and cover edge cases.
+    - Instructions: Mark in-progress; complete when green in CI/local._
+
+- [x] 7. Add input handling tests
+  - Files: `tests/input_handling_tests.rs`
+  - Verify traversal bpm→bars→OK, OK↔Cancel left/right; Enter opens popup; Enter on OK applies; Enter on Cancel and Esc discard; digits-only editing behavior
+  - _Leverage: input handling helpers if present_
+  - _Requirements: 2, 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: Rust integration test engineer
+    - Task: Add deterministic tests for key handling and popup lifecycle.
+    - Restrictions: Avoid coupling to rendering details.
+    - _Leverage: `tests/input_handling_tests.rs`
+    - _Requirements: 2,3,4
+    - Success: All new tests green.
+    - Instructions: Mark in-progress; complete when passing._
+
+- [x] 8. Add E2E tests for BPM/bars flow
+  - Files: `tests/e2e/bpm-and-bars.test.ts`
+  - Scenarios: arrow shows/focuses summary box; Enter opens popup; edit bpm/bars; OK applies (numbers update in summary); Cancel/Esc discards
+  - _Leverage: `@microsoft/tui-test`, existing e2e config_
+  - _Requirements: 1, 2, 3, 4_
+  - _Prompt: Implement the task for spec mvp-2-setup-bpm-and-loop-bars, first run spec-workflow-guide to get the workflow guide then implement the task:
+    - Role: E2E QA (tui-test)
+    - Task: Write robust E2E covering the visible flows; keep timings deterministic.
+    - Restrictions: Avoid flakiness; use configured terminal size/env.
+    - _Leverage: `tui-test.config.ts`, existing e2e helpers
+    - _Requirements: 1,2,3,4
+    - Success: E2E green locally; reliable across retries.
+    - Instructions: Mark in-progress; complete when stable._

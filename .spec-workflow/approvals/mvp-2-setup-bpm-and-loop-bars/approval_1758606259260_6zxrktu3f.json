@@ -1,0 +1,21 @@
+{
+  "id": "approval_1758606259260_6zxrktu3f",
+  "title": "Approve revised design for spec mvp-2-setup-bpm-and-loop-bars",
+  "filePath": ".spec-workflow/specs/mvp-2-setup-bpm-and-loop-bars/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-23T05:44:19.260Z",
+  "category": "spec",
+  "categoryName": "mvp-2-setup-bpm-and-loop-bars",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. There is no description of the summary box’s design. The summary box is placed at the top-left of the pads screen, and its height is roughly two-fifths of the screen. It has a green border similar to the pads and, as of the current implementation, it contains the bpm and bars elements, aligned to the top. The items are shown as bpm: <number> and bars: <number>, arranged vertically. The labels “bpm:” and “bars:” are left-aligned, the numbers are right-aligned, and the gap between each label and its number is made as wide as possible. When it is focused with the arrow keys, a white rectangular outline appears that encloses the two elements (bpm and bars). When selected with the Enter key, the inside of the white outline is highlighted.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"There is no description of the summary box’s design. The summary box is placed at the top-left of the pads screen, and its height is roughly two-fifths of the screen. It has a green border similar to the pads and, as of the current implementation, it contains the bpm and bars elements, aligned to the top. The items are shown as bpm: <number> and bars: <number>, arranged vertically. The labels “bpm:” and “bars:” are left-aligned, the numbers are right-aligned, and the gap between each label and its number is made as wide as possible. When it is focused with the arrow keys, a white rectangular outline appears that encloses the two elements (bpm and bars). When selected with the Enter key, the inside of the white outline is highlighted.\",\n      \"timestamp\": \"2025-09-23T06:02:48.117Z\",\n      \"id\": \"comment_1758607368117_rb274432a\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. There is no description of the summary box’s design. The summary box is placed at the top-left of the pads screen, and its height is roughly two-fifths of the screen. It has a green border similar to the pads and, as of the current implementation, it contains the bpm and bars elements, aligned to the top. The items are shown as bpm: <number> and bars: <number>, arranged vertically. The labels “bpm:” and “bars:” are left-aligned, the numbers are right-aligned, and the gap between each label and its number is made as wide as possible. When it is focused with the arrow keys, a white rectangular outline appears that encloses the two elements (bpm and bars). When selected with the Enter key, the inside of the white outline is highlighted.\\n\\n\",\n  \"timestamp\": \"2025-09-23T06:02:49.182Z\"\n}",
+  "respondedAt": "2025-09-23T06:02:49.203Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "There is no description of the summary box’s design. The summary box is placed at the top-left of the pads screen, and its height is roughly two-fifths of the screen. It has a green border similar to the pads and, as of the current implementation, it contains the bpm and bars elements, aligned to the top. The items are shown as bpm: <number> and bars: <number>, arranged vertically. The labels “bpm:” and “bars:” are left-aligned, the numbers are right-aligned, and the gap between each label and its number is made as wide as possible. When it is focused with the arrow keys, a white rectangular outline appears that encloses the two elements (bpm and bars). When selected with the Enter key, the inside of the white outline is highlighted.",
+      "timestamp": "2025-09-23T06:02:48.117Z",
+      "id": "comment_1758607368117_rb274432a"
+    }
+  ]
+}
