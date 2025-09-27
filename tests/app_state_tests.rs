@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 
+use termigroove::app_state::{AppState, PopupFocus};
 use termigroove::selection::SelectionModel;
+use tui_input::{Input as TextInput, InputRequest};
 
 #[test]
 fn add_appends_and_sets_status_and_cursor() {
@@ -67,4 +69,86 @@ fn empty_list_noops_on_nav_and_remove() {
     assert_eq!(m.items.len(), 0);
     assert_eq!(m.right_idx, 0);
     assert_eq!(m.status, before_status);
+}
+
+#[test]
+fn bpm_bars_defaults_and_clamping() {
+    let mut state = AppState::new().expect("init AppState");
+    assert_eq!(state.get_bpm(), 120);
+    assert_eq!(state.get_bars(), 16);
+
+    state.set_bpm(5);
+    assert_eq!(state.get_bpm(), 20);
+    state.set_bpm(400);
+    assert_eq!(state.get_bpm(), 300);
+
+    state.set_bars(0);
+    assert_eq!(state.get_bars(), 1);
+    state.set_bars(999);
+    assert_eq!(state.get_bars(), 256);
+}
+
+#[test]
+fn open_and_close_popup_apply_and_discard() {
+    let mut state = AppState::new().expect("init AppState");
+    state.open_bpm_bars_popup();
+    assert!(state.is_bpm_popup_open());
+    assert_eq!(state.popup_focus(), PopupFocus::PopupFieldBpm);
+
+    set_input_text(state.draft_bpm_mut(), "130");
+    set_input_text(state.draft_bars_mut(), "8");
+    state.close_bpm_bars_popup(true);
+    assert_eq!(state.get_bpm(), 130);
+    assert_eq!(state.get_bars(), 8);
+
+    let bpm_before = state.get_bpm();
+    let bars_before = state.get_bars();
+    state.open_bpm_bars_popup();
+    set_input_text(state.draft_bpm_mut(), "240");
+    set_input_text(state.draft_bars_mut(), "32");
+    state.close_bpm_bars_popup(false);
+    assert_eq!(state.get_bpm(), bpm_before);
+    assert_eq!(state.get_bars(), bars_before);
+}
+
+#[test]
+fn opening_popup_copies_current_values_into_drafts() {
+    let mut state = AppState::new().expect("init AppState");
+
+    state.set_bpm(140);
+    state.set_bars(12);
+    state.open_bpm_bars_popup();
+    assert_eq!(state.draft_bpm().value(), "140");
+    assert_eq!(state.draft_bars().value(), "12");
+    state.close_bpm_bars_popup(false);
+
+    state.set_bpm(200);
+    state.set_bars(8);
+    state.open_bpm_bars_popup();
+    assert_eq!(state.draft_bpm().value(), "200");
+    assert_eq!(state.draft_bars().value(), "8");
+}
+
+#[test]
+fn close_popup_apply_clamps_and_resets_state() {
+    let mut state = AppState::new().expect("init AppState");
+    state.open_bpm_bars_popup();
+
+    set_input_text(state.draft_bpm_mut(), "999");
+    set_input_text(state.draft_bars_mut(), "0");
+    state.close_bpm_bars_popup(true);
+
+    assert_eq!(state.get_bpm(), 300);
+    assert_eq!(state.get_bars(), 1);
+    assert!(!state.is_bpm_popup_open());
+    assert!(matches!(state.popup_focus(), PopupFocus::None));
+    assert_eq!(state.draft_bpm().value(), "");
+    assert_eq!(state.draft_bars().value(), "");
+}
+
+fn set_input_text(input: &mut TextInput, value: &str) {
+    input.reset();
+    for ch in value.chars() {
+        let _ = input.handle(InputRequest::InsertChar(ch));
+    }
 }

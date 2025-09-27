@@ -1,13 +1,15 @@
 use ratatui::crossterm::event::{Event, KeyCode, KeyEvent};
 
 use crate::app_state::AppState;
-use crate::app_state::Mode;
+use crate::app_state::{Mode, PopupFocus};
 use crate::audio::AudioCommand;
 use std::time::{SystemTime, UNIX_EPOCH};
+use tui_input::InputRequest;
+use tui_input::backend::crossterm::to_input_request;
 
-pub fn handle_event(_state: &mut AppState, _event: Event) -> anyhow::Result<()> {
-    match _event {
-        Event::Key(_key) => handle_key_event(_state, _key)?,
+pub fn handle_event(state: &mut AppState, event: Event) -> anyhow::Result<()> {
+    match event {
+        Event::Key(key) => handle_key_event(state, key)?,
         Event::Resize(_, _) => {
             // No-op for now; UI will recalc layout during draw
         }
@@ -43,54 +45,54 @@ fn route_key_to_focused_pane(state: &mut AppState, key: KeyEvent) -> anyhow::Res
     }
 }
 
-fn handle_left_pane_key(_state: &mut AppState, _key: KeyEvent) -> anyhow::Result<()> {
-    match _key.code {
+fn handle_left_pane_key(state: &mut AppState, key: KeyEvent) -> anyhow::Result<()> {
+    match key.code {
         KeyCode::Char(' ') => {
-            if _state.current_left_is_dir {
-                _state.status_message = "Only files can be selected".to_string();
-            } else if let Some(path) = _state.current_left_item.clone() {
-                _state.toggle_select_file(path);
+            if state.current_left_is_dir {
+                state.status_message = "Only files can be selected".to_string();
+            } else if let Some(path) = state.current_left_item.clone() {
+                state.toggle_select_file(path);
             }
             Ok(())
         }
         _ => {
             // Forward unhandled keys to the explorer
-            let event = Event::Key(_key);
-            _state.file_explorer.handle(&event)?;
+            let event = Event::Key(key);
+            state.file_explorer.handle(&event)?;
             // Update current_left_item/dir based on explorer selection
-            let idx = _state.file_explorer.selected_idx();
-            if let Some(entry) = _state.file_explorer.files().get(idx) {
-                _state.current_left_item = Some(entry.path().to_path_buf());
-                _state.current_left_is_dir = entry.is_dir();
+            let idx = state.file_explorer.selected_idx();
+            if let Some(entry) = state.file_explorer.files().get(idx) {
+                state.current_left_item = Some(entry.path().to_path_buf());
+                state.current_left_is_dir = entry.is_dir();
             }
             Ok(())
         }
     }
 }
 
-fn handle_right_pane_key(_state: &mut AppState, _key: KeyEvent) -> anyhow::Result<()> {
-    match _key.code {
+fn handle_right_pane_key(state: &mut AppState, key: KeyEvent) -> anyhow::Result<()> {
+    match key.code {
         KeyCode::Up => {
-            _state.selection.move_up();
+            state.selection.move_up();
             Ok(())
         }
         KeyCode::Down => {
-            _state.selection.move_down();
+            state.selection.move_down();
             Ok(())
         }
         KeyCode::Char(' ') | KeyCode::Delete => {
-            let before_len = _state.selection.items.len();
-            _state.selection.remove_at_cursor();
-            if _state.selection.items.len() < before_len {
-                _state.status_message = _state.selection.status.clone();
+            let before_len = state.selection.items.len();
+            state.selection.remove_at_cursor();
+            if state.selection.items.len() < before_len {
+                state.status_message = state.selection.status.clone();
             }
             Ok(())
         }
         KeyCode::Char('d') => {
-            let before_len = _state.selection.items.len();
-            _state.selection.remove_at_cursor();
-            if _state.selection.items.len() < before_len {
-                _state.status_message = _state.selection.status.clone();
+            let before_len = state.selection.items.len();
+            state.selection.remove_at_cursor();
+            if state.selection.items.len() < before_len {
+                state.status_message = state.selection.status.clone();
             }
             Ok(())
         }
@@ -99,10 +101,57 @@ fn handle_right_pane_key(_state: &mut AppState, _key: KeyEvent) -> anyhow::Resul
 }
 
 fn handle_pads_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<()> {
+    // If popup is open, handle its lifecycle
+    if state.is_bpm_popup_open() {
+        match key.code {
+            KeyCode::Esc => state.close_bpm_bars_popup(false),
+            KeyCode::Enter => match state.popup_focus() {
+                PopupFocus::PopupOk => state.close_bpm_bars_popup(true),
+                PopupFocus::PopupCancel => state.close_bpm_bars_popup(false),
+                _ => {}
+            },
+            KeyCode::Up => state.popup_focus_up(),
+            KeyCode::Down => state.popup_focus_down(),
+            KeyCode::Left | KeyCode::Right => state.popup_toggle_ok_cancel(),
+            _ => {
+                if let Some(req) = to_input_request(&Event::Key(key)) {
+                    // Enforce digits-only input for InsertChar requests
+                    let should_apply = match req {
+                        InputRequest::InsertChar(c) => c.is_ascii_digit(),
+                        _ => true,
+                    };
+                    if should_apply {
+                        match state.popup_focus() {
+                            PopupFocus::PopupFieldBpm => {
+                                let _ = state.draft_bpm_mut().handle(req);
+                            }
+                            PopupFocus::PopupFieldBars => {
+                                let _ = state.draft_bars_mut().handle(req);
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+        }
+        return Ok(());
+    }
+
     match key.code {
         KeyCode::Esc => {
             state.mode = Mode::Browse;
             state.status_message = "Back to browse".to_string();
+            Ok(())
+        }
+        KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
+            // Any arrow focuses the summary box
+            state.focus_summary_box();
+            Ok(())
+        }
+        KeyCode::Enter => {
+            if matches!(state.popup_focus(), PopupFocus::SummaryBox) {
+                state.open_bpm_bars_popup();
+            }
             Ok(())
         }
         KeyCode::Char(c) => {

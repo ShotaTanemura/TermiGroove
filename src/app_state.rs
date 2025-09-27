@@ -5,6 +5,7 @@ use ratatui_explorer::FileExplorer;
 use ratatui_explorer::Theme as ExplorerTheme;
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
+use tui_input::Input as TextInput;
 
 const HELP_LINE: &str =
     "  Enter: to pads / Space: select / Tab: switch pane / d/Delete: remove / q: quit  ";
@@ -37,6 +38,14 @@ pub struct AppState {
     pub file_explorer: FileExplorer,
     pub pads: PadsState,
     pub audio_tx: std::sync::mpsc::Sender<AudioCommand>,
+    // --- Global tempo & loop state ---
+    bpm: u16,
+    bars: u16,
+    // Popup / editing state for BPM & Bars configuration
+    is_popup_open: bool,
+    popup_focus: PopupFocus,
+    draft_bpm: TextInput,
+    draft_bars: TextInput,
 }
 
 #[derive(Debug, Default, Clone)]
@@ -73,6 +82,13 @@ impl AppState {
             file_explorer,
             pads: PadsState::default(),
             audio_tx,
+            // tempo/loop defaults
+            bpm: 120,
+            bars: 16,
+            is_popup_open: false,
+            popup_focus: PopupFocus::None,
+            draft_bpm: TextInput::new(120.to_string()),
+            draft_bars: TextInput::new(16.to_string()),
         })
     }
 
@@ -150,6 +166,121 @@ impl AppState {
         self.status_message = "[Pads] Press Esc to go back. Press Q/W/…/< to trigger.".to_string();
         Ok(())
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PopupFocus {
+    #[default]
+    None,
+    SummaryBox,
+    PopupFieldBpm,
+    PopupFieldBars,
+    PopupOk,
+    PopupCancel,
+}
+
+impl AppState {
+    // ----- Getters -----
+    pub fn get_bpm(&self) -> u16 {
+        self.bpm
+    }
+    pub fn get_bars(&self) -> u16 {
+        self.bars
+    }
+    pub fn is_bpm_popup_open(&self) -> bool {
+        self.is_popup_open
+    }
+    pub fn popup_focus(&self) -> PopupFocus {
+        self.popup_focus
+    }
+
+    // Access draft text values
+    pub fn draft_bpm_mut(&mut self) -> &mut TextInput {
+        &mut self.draft_bpm
+    }
+    pub fn draft_bars_mut(&mut self) -> &mut TextInput {
+        &mut self.draft_bars
+    }
+    pub fn draft_bpm(&self) -> &TextInput {
+        &self.draft_bpm
+    }
+    pub fn draft_bars(&self) -> &TextInput {
+        &self.draft_bars
+    }
+
+    // ----- Setters (clamped) -----
+    pub fn set_bpm(&mut self, bpm: u16) {
+        self.bpm = clamp_bpm(bpm);
+    }
+    pub fn set_bars(&mut self, bars: u16) {
+        self.bars = clamp_bars(bars);
+    }
+
+    // ----- Popup lifecycle -----
+    pub fn open_bpm_bars_popup(&mut self) {
+        self.is_popup_open = true;
+        self.popup_focus = PopupFocus::PopupFieldBpm;
+        self.draft_bpm = TextInput::new(self.bpm.to_string());
+        self.draft_bars = TextInput::new(self.bars.to_string());
+    }
+
+    pub fn close_bpm_bars_popup(&mut self, apply: bool) {
+        if apply {
+            if let Ok(bpm) = self.draft_bpm.value().parse::<u16>() {
+                self.set_bpm(bpm);
+            }
+            if let Ok(bars) = self.draft_bars.value().parse::<u16>() {
+                self.set_bars(bars);
+            }
+        }
+        self.is_popup_open = false;
+        self.popup_focus = PopupFocus::None;
+        self.draft_bpm.reset();
+        self.draft_bars.reset();
+    }
+
+    // ----- Helpers for clamping ranges -----
+    // ----- Popup focus navigation -----
+    pub fn focus_summary_box(&mut self) {
+        self.popup_focus = PopupFocus::SummaryBox;
+    }
+    pub fn popup_focus_up(&mut self) {
+        self.popup_focus = match self.popup_focus {
+            PopupFocus::PopupFieldBpm => PopupFocus::PopupOk,
+            PopupFocus::PopupFieldBars => PopupFocus::PopupFieldBpm,
+            PopupFocus::PopupOk | PopupFocus::PopupCancel => PopupFocus::PopupFieldBars,
+            _ => PopupFocus::SummaryBox,
+        };
+    }
+    pub fn popup_focus_down(&mut self) {
+        self.popup_focus = match self.popup_focus {
+            PopupFocus::PopupFieldBpm => PopupFocus::PopupFieldBars,
+            PopupFocus::PopupFieldBars => PopupFocus::PopupOk,
+            PopupFocus::PopupOk | PopupFocus::PopupCancel => PopupFocus::PopupFieldBpm,
+            _ => PopupFocus::SummaryBox,
+        };
+    }
+    pub fn popup_toggle_ok_cancel(&mut self) {
+        self.popup_focus = match self.popup_focus {
+            PopupFocus::PopupOk => PopupFocus::PopupCancel,
+            PopupFocus::PopupCancel => PopupFocus::PopupOk,
+            _ => PopupFocus::PopupOk,
+        };
+    }
+
+    // ----- Draft editing helpers (digits only; backspace) -----
+}
+
+const BPM_MIN: u16 = 20;
+const BPM_MAX: u16 = 300;
+const BARS_MIN: u16 = 1;
+const BARS_MAX: u16 = 256;
+
+fn clamp_bpm(v: u16) -> u16 {
+    v.clamp(BPM_MIN, BPM_MAX)
+}
+fn clamp_bars(v: u16) -> u16 {
+    v.clamp(BARS_MIN, BARS_MAX)
 }
 
 fn is_wav(p: &Path) -> bool {

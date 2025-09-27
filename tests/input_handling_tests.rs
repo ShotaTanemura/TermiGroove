@@ -1,6 +1,317 @@
-use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
-use termigroove::app_state::{AppState, FocusPane, Mode};
+use ratatui::crossterm::event::KeyCode;
+use ratatui::crossterm::event::KeyEvent;
+use termigroove::app_state::{AppState, Mode, PopupFocus};
 use termigroove::input::handle_event;
+
+#[test]
+fn arrow_focuses_summary_box_and_enter_opens_popup() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Pads;
+
+    // Arrow should focus summary box
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::SummaryBox));
+
+    // Enter should open popup and focus BPM field
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert!(state.is_bpm_popup_open());
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBpm));
+}
+
+#[test]
+fn popup_confirm_and_cancel() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Pads;
+    // open popup
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert!(state.is_bpm_popup_open());
+
+    // Move down to OK, then confirm
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupOk));
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert!(!state.is_bpm_popup_open());
+
+    // Reopen and cancel via Esc
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert!(state.is_bpm_popup_open());
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Esc)),
+    )
+    .unwrap();
+    assert!(!state.is_bpm_popup_open());
+}
+
+fn open_popup(state: &mut AppState) {
+    handle_event(
+        state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    handle_event(
+        state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert!(state.is_bpm_popup_open());
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBpm));
+}
+
+#[test]
+fn popup_focus_traversal_loops_through_fields_and_buttons() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Pads;
+    open_popup(&mut state);
+
+    // Down from BPM -> Bars
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBars));
+
+    // Down -> OK
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupOk));
+
+    // Down should loop back to BPM (cycle BPM -> Bars -> OK -> BPM)
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBpm));
+
+    // Up should go to OK
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Up)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupOk));
+
+    // Left/right toggles OK <-> Cancel
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupCancel));
+
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Left)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupOk));
+
+    // Up from OK should reach Bars then BPM
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Up)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBars));
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Up)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupFieldBpm));
+}
+
+#[test]
+fn popup_digit_input_updates_drafts_and_clamps_on_confirm() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Pads;
+    open_popup(&mut state);
+
+    // Clear default BPM ("120") then type 3-5-0 -> "350"
+    for _ in 0..3 {
+        handle_event(
+            &mut state,
+            ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Backspace)),
+        )
+        .unwrap();
+    }
+    assert_eq!(state.draft_bpm().value(), "");
+
+    for digit in ['3', '5', '0'] {
+        handle_event(
+            &mut state,
+            ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Char(digit))),
+        )
+        .unwrap();
+    }
+    assert_eq!(state.draft_bpm().value(), "350");
+
+    // Move down to bars and enter 2-5-7 -> "257"
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    for _ in 0..2 {
+        handle_event(
+            &mut state,
+            ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Backspace)),
+        )
+        .unwrap();
+    }
+    assert_eq!(state.draft_bars().value(), "");
+
+    for digit in ['2', '5', '7'] {
+        handle_event(
+            &mut state,
+            ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Char(digit))),
+        )
+        .unwrap();
+    }
+    assert_eq!(state.draft_bars().value(), "257");
+
+    // Non-digit input should be ignored
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Char('x'))),
+    )
+    .unwrap();
+    assert_eq!(state.draft_bars().value(), "257");
+
+    // Left/right movement should move caret but not change content
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Left)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    assert_eq!(state.draft_bars().value(), "257");
+
+    // Navigate to OK (loop until focus is on OK)
+    for _ in 0..3 {
+        handle_event(
+            &mut state,
+            ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+        )
+        .unwrap();
+        if matches!(state.popup_focus(), PopupFocus::PopupOk) {
+            break;
+        }
+    }
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupOk));
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+
+    // Values should clamp to configured ranges (BPM -> 300, Bars -> 256)
+    assert_eq!(state.get_bpm(), 300);
+    assert_eq!(state.get_bars(), 256);
+    assert!(!state.is_bpm_popup_open());
+}
+
+#[test]
+fn popup_esc_discard_and_cancel_button_restore_previous_values() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Pads;
+    state.set_bpm(128);
+    state.set_bars(32);
+
+    // Open popup and modify values, then Esc to discard
+    open_popup(&mut state);
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Char('9'))),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Esc)),
+    )
+    .unwrap();
+    assert_eq!(state.get_bpm(), 128);
+    assert_eq!(state.get_bars(), 32);
+    assert!(!state.is_bpm_popup_open());
+
+    // Reopen and use Cancel
+    open_popup(&mut state);
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Down)),
+    )
+    .unwrap();
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Right)),
+    )
+    .unwrap();
+    assert!(matches!(state.popup_focus(), PopupFocus::PopupCancel));
+    handle_event(
+        &mut state,
+        ratatui::crossterm::event::Event::Key(KeyEvent::from(KeyCode::Enter)),
+    )
+    .unwrap();
+    assert_eq!(state.get_bpm(), 128);
+    assert_eq!(state.get_bars(), 32);
+    assert!(!state.is_bpm_popup_open());
+}
+
+use ratatui::crossterm::event::{Event, KeyModifiers};
+use termigroove::app_state::FocusPane;
 
 fn key(code: KeyCode) -> Event {
     Event::Key(KeyEvent::new(code, KeyModifiers::empty()))
