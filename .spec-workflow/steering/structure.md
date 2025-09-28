@@ -3,77 +3,103 @@
 ## Directory Organization
 
 ```
-termigroove/
-├── src/                      # Rust source code (binary entrypoint in main.rs)
-├── tests/
-│   └── e2e/                  # End-to-end TUI tests (JS/TS via @microsoft/tui-test)
-├── target/                   # Cargo build outputs (debug/release)
-├── .spec-workflow/           # Specs & steering docs/templates
-│   ├── templates/
-│   └── steering/
-├── .cursor/                  # Cursor MCP/rules and commands
-├── tui-traces/               # Test traces from tui-test
-├── package.json              # Dev tooling (tui-test, ts)
-├── tui-test.config.ts        # TUI test runner config (binary path, env, size)
-├── Cargo.toml                # Rust package manifest
-├── rust-toolchain            # Pinned Rust toolchain
-└── README.md                 # Project readme
+TermiGroove/
+├── src/                      # Rust source (state, audio, UI, input, selection modules)
+│   ├── app_state.rs          # Global application state & focus models
+│   ├── audio.rs              # Audio engine commands, thread management, CPAL integration
+│   ├── input.rs              # Keyboard and event handling, focus routing
+│   ├── selection.rs          # File selection modeling for pads workflow
+│   ├── ui.rs                 # ratatui rendering for explorer, pads, summary/popup
+│   ├── main.rs               # Binary entrypoint wiring terminal loop
+│   └── state/                # Supporting state models (if present)
+├── tests/                    # Rust integration/unit tests and TUI e2e harness
+│   ├── app_state_tests.rs    # Unit tests for AppState behavior
+│   ├── input_handling_tests.rs
+│   ├── integration_*.rs      # Scenario tests for file navigation, pads, etc.
+│   ├── unit/                 # Additional fine-grained tests
+│   └── e2e/                  # @microsoft/tui-test scripts (.test.ts)
+├── samples/                  # Example audio files for manual testing
+├── termigroove/              # (Optional) workspace or generated artifacts
+├── .serena/                  # Serena MCP agent data (memories, configs) supporting AI workflows
+├── Cargo.toml                # Rust crate manifest
+├── Cargo.lock                # Locked dependencies
+├── package.json              # Node scripts for e2e testing
+├── package-lock.json         # Node dependency lockfile
+├── tui-test.config.ts        # Configuration for tui-test harness
+├── .spec-workflow/           # Spec and steering docs, decision logs
+└── .cursor/                  # Automation rules and commands
 ```
+
+> Note: `.serena/` captures AI-assistant memory/configuration per the Serena MCP tooling (see https://github.com/oraios/serena). These files should be preserved for agentic development workflows.
 
 ## Naming Conventions
 
 ### Files
-- **Rust source**: `snake_case.rs` (e.g., `main.rs`)
-- **Tests (E2E)**: `*.test.ts` / `*.spec.ts` under `tests/e2e/`
-- **Docs**: Markdown under `.spec-workflow/`
+- Rust modules use `snake_case` (`app_state.rs`, `input_handling_tests.rs`).
+- Directories also use `snake_case` or lowercase (`state`, `tests`, `samples`).
+- Test files mirror module names with `_tests` suffix or scenario descriptors.
 
 ### Code
-- **Rust types/structs/enums**: PascalCase
-- **Rust functions/variables**: snake_case
-- **Constants**: UPPER_SNAKE_CASE
-- **TS test variables/functions**: camelCase
+- **Enums/Structs**: `PascalCase` (`AppState`, `PopupFocus`).
+- **Functions/Methods**: `snake_case` (`handle_event`, `enter_pads`).
+- **Constants**: `UPPER_SNAKE_CASE` (`HELP_LINE`, `BPM_MIN`).
+- **Variables**: `snake_case` (`current_left_item`, `draft_bpm`).
 
 ## Import Patterns
 
-### Rust
-1. Std lib imports
-2. External crates
-3. Internal modules
+### Import Order
+1. External crates (standard library, third-party).
+2. Internal modules via `crate::` or module path.
+3. No style imports (TUI styling handled inline).
 
-### TypeScript (tests)
-1. External packages (`@microsoft/tui-test`)
-2. Local helpers (if added)
+### Module/Package Organization
+- Prefer absolute crate paths (`crate::audio::AudioCommand`).
+- Cross-module access done through public methods on `AppState` rather than exposing inner fields.
+- Tests import modules with `use termigroove::*` or direct module references.
 
 ## Code Structure Patterns
 
-### Rust module organization
-1. `use` imports
-2. consts/config
-3. types
-4. implementation
-5. helpers
+### Module Organization
+1. Imports and use statements.
+2. Constants and helper functions.
+3. Struct/enum definitions.
+4. Core implementations (`impl` blocks) with public API first.
+5. Private helpers at bottom where needed.
 
-### Test organization (tui-test)
-1. Configure program path and env in `tui-test.config.ts`
-2. Assert visible text and flows via `terminal.getByText`
+### Function Organization
+- Validate input/state early (e.g., selection checks in `enter_pads`).
+- Update state via dedicated setters to maintain invariants (BPM, bars clamp).
+- Emit audio/UI commands after state mutation.
+- Return `Result` with context via `anyhow` when operations may fail.
+
+### File Organization Principles
+- One primary component per file (state, input, UI, audio separated).
+- Keep UI rendering logic in `ui.rs`; avoid mixing with state transitions.
+- Tests colocated by concern (AppState tests interact with state behaviors only).
 
 ## Code Organization Principles
-1. Single Responsibility per file
-2. Modularity for future TUI modules (views, input, audio)
-3. Testability via binary-level E2E tests
-4. Consistency with Rust & TS idioms
+1. **Single Responsibility**: Each module owns a distinct concern (state vs UI vs audio).
+2. **Separation of Concerns**: Input handlers mutate `AppState`; UI reads from state.
+3. **Testability**: Public getters/setters enable unit and integration testing without UI coupling.
+4. **Predictability**: Clamping and validation centralized to avoid duplicated logic.
 
 ## Module Boundaries
-- Core binary (`src/`) vs. test harness (`tests/e2e`)
-- Future: TUI (ratatui) views vs. engine modules; clear one-way deps from UI → core
+- `AppState` is the central source of truth; other modules depend on it via public APIs.
+- `audio` module only receives commands, never directly reads UI state.
+- `ui` module renders based on read-only state access; no side effects.
+- `input` owns translating events into state mutations and audio commands.
+- Tests may mock or simulate audio via channel senders, keeping coupling low.
 
 ## Code Size Guidelines
-- Keep functions small (<50 lines where practical)
-- Prefer splitting into modules when files exceed ~300 lines
+- Aim to keep modules under ~400 lines; split when adding major features.
+- Functions ideally ≤50 lines; refactor lengthy logic into helpers.
+- Limit enum variants to what is necessary; prefer compositional state over deep nesting.
+
+## Dashboard/Monitoring Structure (if applicable)
+- TUI dashboard components live in `ui.rs`; summary boxes and popups use dedicated rendering functions.
+- No separate dashboard subsystem yet; future remote/analytics components would reside under `src/ui/` submodules or dedicated directories.
 
 ## Documentation Standards
-- Public modules/functions: rustdoc where applicable
-- Complex logic: brief comments above non-obvious sections
-- Steering/spec docs live in `.spec-workflow/`
-
-
+- Public-facing enums and structs documented when behavior is non-obvious.
+- Complex focus or input flows warrant inline comments near state transitions.
+- Steering/spec documents maintained under `.spec-workflow/` with decision logs updated per feature.
