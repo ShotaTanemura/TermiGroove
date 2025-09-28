@@ -19,7 +19,7 @@
         },
         "spec-workflow": {
             "command": "npx",
-            "args": ["-y", "@pimzino/spec-workflow-mcp@latest", "/Users/shota.tanemura/workspace/TermiGroove", "--AutoStartDashboard"]
+            "args": ["-y", "@pimzino/spec-workflow-mcp@latest", "${workspaceFolder}", "--AutoStartDashboard"]
         }
     }
 }

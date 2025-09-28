@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -e
+
+staged=$(git diff --cached --name-only -z --diff-filter=ACMR)
+
+[ -z "${staged}" ] && exit 0
+
+has_non_doc=0
+printf '%s' "$staged" | tr '\0' '\n' | while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  case "$path" in
+    *.md|*.MD|*.json|*.JSON)
+      : ;;
+    *)
+      has_non_doc=1
+      echo 1
+      break
+      ;;
+  esac
+done | grep -q 1 && has_non_doc=1 || true
+
+# すべて md/json だけならフックをスキップ
+if [ "$has_non_doc" -eq 0 ]; then
+  echo "[pre-commit] Only *.md / *.json staged. Skipping checks."
+  exit 0
+fi
+
+echo '+cargo test'
+cargo test
+echo '+cargo clippy -- -D warnings'
+cargo clippy -- -D warnings
+echo '+cargo fmt -- --check'
+cargo fmt -- --check
+echo '+cargo audit'
+cargo audit
+echo '+npm run --silent test:e2e'
+npm run --silent test:e2e
