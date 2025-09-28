@@ -1,92 +1,101 @@
 # Technology Stack
 
 ## Project Type
-Terminal User Interface (TUI) music app (sampler/player) written in Rust with end-to-end TUI tests driven from Node.js tooling.
+Terminal-based music workstation and live looping instrument built as a cross-platform CLI/TUI application.
 
 ## Core Technologies
 
 ### Primary Language(s)
-- **Language**: Rust 2024 edition; TypeScript for E2E test harness
-- **Runtime/Compiler**: rustc (via toolchain file), Node.js for test runner
-- **Language-specific tools**: cargo for Rust builds; npm for JS tooling
+- **Language**: Rust 2024 Edition
+- **Runtime/Compiler**: rustc 1.89.0 (rust-toolchain pinned)
+- **Language-specific tools**: Cargo for build/test, rustfmt, clippy
 
 ### Key Dependencies/Libraries
-- **Rust**: (TBD as features are added; currently no runtime crates specified)
-- **Dev tooling**: `cargo-husky` for git hooks (developer ergonomics)
-- **JS/TS (dev)**: `@microsoft/tui-test` for terminal UI E2E tests; `typescript` for typings/transforms
- - **CI**: GitHub Actions for continuous integration
+- **ratatui 0.29**: Terminal UI rendering framework
+- **crossterm 0.27**: Cross-platform terminal input/output backend
+- **tui-popup 0.6**: Modal dialog rendering within ratatui
+- **tui-input 0.14**: Text input field handling for the popup editor
+- **ratatui-explorer (git)**: File explorer widget for browsing sample directories
+- **rodio 0.18 / CPAL**: Audio playback stack for mixing and streaming samples
+- **anyhow 1**: Error handling with context
+- **@microsoft/tui-test**: Node-based end-to-end testing harness
 
 ### Application Architecture
-Standalone monolith binary (`termigroove`). The TUI orchestrates input handling, playback control, and view rendering. E2E tests spawn the compiled binary and assert terminal output.
+Modular monolith with dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
 
 ### Data Storage (if applicable)
-- **Primary storage**: In-memory for alpha
-- **Data formats**: CLI args, stdout text; future sample metadata likely as simple files (TBD)
+- **Primary storage**: In-memory structures; audio files read from local filesystem on demand
+- **Caching**: None beyond process memory
+- **Data formats**: WAV/MP3 sample files; internal structs and enums
 
 ### External Integrations (if applicable)
-- None in alpha (offline, co-located usage). Networked/remote features are out of scope.
+- **APIs**: None
+- **Protocols**: Terminal I/O (stdin/stdout), audio device access via CPAL
+- **Authentication**: Not applicable
 
 ### Monitoring & Dashboard Technologies (if applicable)
-- **Dashboard Framework**: Terminal UI
-- **Real-time Communication**: Local event loop within the process
-- **Visualization Libraries**: Terminal text rendering (TBD specific crate)
-- **State Management**: In-memory application state
+- **Dashboard Framework**: ratatui widgets for on-terminal dashboards
+- **Real-time Communication**: Local render loop; potential future websocket bridge
+- **Visualization Libraries**: ratatui built-ins, custom widgets, ASCII meters
+- **State Management**: Central `AppState` struct
 
 ## Development Environment
 
 ### Build & Development Tools
-- **Build System**: cargo
-- **Package Management**: cargo (Rust), npm (dev tooling)
-- **Development workflow**: Build with cargo; run E2E with `tui-test`
+- **Build System**: Cargo
+- **Package Management**: Cargo (Rust), npm (Node e2e tools)
+- **Development workflow**: Tight TDD loop with specs; manual cargo runs for interactive testing
 
 ### Code Quality Tools
-- **Testing Framework**: `@microsoft/tui-test` for E2E
-- **Formatting/Lints**: rustfmt/clippy (recommended), TypeScript compiler for test code
- - **CI**: GitHub Actions workflows for build and test automation
+- **Static Analysis**: `cargo clippy`
+- **Formatting**: `cargo fmt`
+- **Testing Framework**: `cargo test` (unit/integration), `npm run test:e2e` with @microsoft/tui-test
+- **Documentation**: `cargo doc` (on demand)
 
 ### Version Control & Collaboration
 - **VCS**: Git
-- **Branching Strategy**: Feature branches with PR reviews (per repo conventions)
+- **Branching Strategy**: Feature branches with PRs to mainline (per workflow notes)
+- **Code Review Process**: Spec-driven approvals; documented decision logs, GitHub PRs
+
+### Dashboard Development (if applicable)
+- **Live Reload**: Terminal redraw via event loop; no hot reload
+- **Port Management**: Not applicable
+- **Multi-Instance Support**: Multiple terminals possible; no shared state
 
 ## Deployment & Distribution (if applicable)
-- **Target Platform(s)**: Desktop (macOS first-class), Linux/Windows TBD
-- **Distribution Method**: Built binaries (cargo build/release)
+- **Target Platform(s)**: macOS primary, Linux and Windows supported via CPAL/crossterm
+- **Distribution Method**: Source build via Cargo; future binaries possible
+- **Installation Requirements**: Rust toolchain 1.89+, Node 18+ for e2e tests
+- **Update Mechanism**: Git pull and rebuild
 
 ## Technical Requirements & Constraints
 
 ### Performance Requirements
-- Fast startup, responsive keyboard interactions in TUI
+- Sub-10ms input-to-audio latency for pad triggering
+- Stable audio playback with zero pops/clicks during BPM changes
+- Terminal rendering responsive at 20–60 FPS target
 
 ### Compatibility Requirements  
-- **Platform Support**: macOS 14+ (validated in CI locally), others TBD
-- **Dependency Versions**: Rust toolchain pinned via `rust-toolchain`
+- **Platform Support**: macOS 14 (primary), Linux, Windows (targeted via CPAL)
+- **Dependency Versions**: ratatui 0.29, crossterm 0.27, rodio 0.18, tui-input 0.14, @microsoft/tui-test ^0.0.1-rc.5
+- **Standards Compliance**: Follow Rust edition idioms, CPAL audio interfaces
 
 ### Security & Compliance
-- Local, offline app; minimal data handling in alpha
+- **Security Requirements**: Local-only app; ensure safe file handling and avoid executing untrusted content
+- **Compliance Standards**: None formal; respect user privacy by avoiding telemetry
+- **Threat Model**: Minimal attack surface; guard against malformed audio files causing crashes
 
 ### Scalability & Reliability
-- Single-process local app; reliability via robust input handling and graceful errors
+- **Expected Load**: Single user sessions, 8 concurrent tracks
+- **Availability Requirements**: High reliability during live sets; deterministic behavior under stress
+- **Growth Projections**: Future remote collaboration may require networking layer
 
 ## Technical Decisions & Rationale
-1. **Rust for performance and portability**: Low-latency input/render loop is a good fit.
-2. **TUI-first UX**: Keyboard-driven workflows match the product’s simplicity and flow principles.
-3. **E2E via `@microsoft/tui-test`**: High-confidence testing against compiled binary behavior.
-
-### Planned Decisions (not yet applied in codebase)
-- **ratatui**: TUI framework to build terminal interfaces (`https://github.com/ratatui/ratatui`).
-- **ratatui-explorer**: File selection UI for choosing sample files (`https://github.com/tatounee/ratatui-explorer`).
-- **ratatui-widgets**: Additional widgets to enhance the TUI (`https://github.com/joshka/ratatui-widgets`).
+1. **Rust + ratatui for TUI**: Provides performance, safety, and expressive terminal rendering; alternatives like Python curses lacked performance.
+2. **CPAL/Rodio audio stack**: Cross-platform audio with low-level control, enabling precise looping and mixing.
+3. **Strict TDD workflow**: Ensures confidence for live performance features and aligns with Notion-driven spec process.
 
 ## Known Limitations
-- No audio engine or TUI framework integrated yet (skeleton). Crate selection pending.
-- Networked/remote collaboration is out of scope for alpha.
-
----
-
-### References
-- `Cargo.toml`
-- `src/main.rs`
-- `package.json`
-- `tui-test.config.ts`
-
-
+- **Headless Audio Dependencies**: Virtual audio setup required for CI; configuration complexity exists.
+- **Single-Process Architecture**: No remote collaboration yet; scaling to multi-user requires new infrastructure.
+- **File Format Scope**: Currently optimized for WAV/MP3; other formats unsupported until future work.
