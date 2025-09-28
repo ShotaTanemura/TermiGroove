@@ -1,0 +1,75 @@
+{
+  "id": "approval_1759024302623_te9xab92l",
+  "title": "Requirements draft for mvp-2-record-loop-track",
+  "filePath": ".spec-workflow/specs/mvp-2-record-loop-track/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T01:51:42.623Z",
+  "category": "spec",
+  "categoryName": "mvp-2-record-loop-track",
+  "response": "Feedback Summary (5 comments):\n\nSpecific Text Comments:\n1. \"the performer presses Space\": In state 'Recording', if an user presses space key, recording should be canceled and move state to 'Idle'.\n2. \"2. GIVEN the count-in is active, THEN the UI expos...\": UI features to create a track and play a loop is out of scope for this user story.\n3. \"2. GIVEN state `Recording`, WHEN Space is pressed,...\": GIVEN state `Recording`, WHEN Space is pressed, THEN recording should be canceled immediately, transitions to `Idle`, and clear triggered events.\n4. \"### Requirement 6 – Transport & UI feedback\n**User...\": UI features to create a track and play a loop is out of scope for this user story.\n5. \"- Clarify persistence expectations: is loop conten...\": Without resetting a loop by an user, loop content should survive app restarts.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"In state 'Recording', if an user presses space key, recording should be canceled and move state to 'Idle'.\",\n      \"timestamp\": \"2025-09-28T01:56:54.392Z\",\n      \"selectedText\": \"the performer presses Space\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759024614392_o0s6s7l7n\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"UI features to create a track and play a loop is out of scope for this user story.\",\n      \"timestamp\": \"2025-09-28T02:10:52.375Z\",\n      \"selectedText\": \"2. GIVEN the count-in is active, THEN the UI exposes a countdown status (e.g., `4-3-2-1` or progress indicator) and cancels if recording is interrupted (e.g., Space pressed again before count-in completes).\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#ffeb3b\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759024804841_tst1f6qgh\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"GIVEN state `Recording`, WHEN Space is pressed, THEN recording should be canceled immediately, transitions to `Idle`, and clear triggered events.\",\n      \"timestamp\": \"2025-09-28T02:05:20.932Z\",\n      \"selectedText\": \"2. GIVEN state `Recording`, WHEN Space is pressed, THEN recording stops immediately, transitions to `Playing`, and any events triggered before the stop are retained.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759025120932_emmseoo2g\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"UI features to create a track and play a loop is out of scope for this user story.\",\n      \"timestamp\": \"2025-09-28T02:10:33.691Z\",\n      \"selectedText\": \"### Requirement 6 – Transport & UI feedback\\n**User Story:** As a performer, I want unambiguous UI feedback for Ready/Recording/Playing so that I can perform without guesswork.\\n\\n#### Acceptance Criteria\\n1. GIVEN any lifecycle state, THEN the transport strip shows the active state (`Ready`, `Recording`, `Playing`) with color and text cues consistent with existing steering guidelines.\\n2. GIVEN state transitions occur, THEN the Pads screen updates within one frame (≤50 ms) to reflect the new state.\\n3. GIVEN the metronome count-in or playback is active, THEN there is no overlapping or stale UI indicator lingering after the state changes.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759025433691_yfpc66zpf\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Without resetting a loop by an user, loop content should survive app restarts.\",\n      \"timestamp\": \"2025-09-28T02:13:21.036Z\",\n      \"selectedText\": \"- Clarify persistence expectations: is loop content ephemeral per session or should it survive app restarts?\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759025601036_bfq36upq7\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (5 comments):\\n\\nSpecific Text Comments:\\n1. \\\"the performer presses Space\\\": In state 'Recording', if an user presses space key, recording should be canceled and move state to 'Idle'.\\n2. \\\"2. GIVEN the count-in is active, THEN the UI expos...\\\": UI features to create a track and play a loop is out of scope for this user story.\\n3. \\\"2. GIVEN state `Recording`, WHEN Space is pressed,...\\\": GIVEN state `Recording`, WHEN Space is pressed, THEN recording should be canceled immediately, transitions to `Idle`, and clear triggered events.\\n4. \\\"### Requirement 6 – Transport & UI feedback\\n**User...\\\": UI features to create a track and play a loop is out of scope for this user story.\\n5. \\\"- Clarify persistence expectations: is loop conten...\\\": Without resetting a loop by an user, loop content should survive app restarts.\\n\",\n  \"timestamp\": \"2025-09-28T02:13:23.169Z\"\n}",
+  "respondedAt": "2025-09-28T02:13:23.219Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "In state 'Recording', if an user presses space key, recording should be canceled and move state to 'Idle'.",
+      "timestamp": "2025-09-28T01:56:54.392Z",
+      "selectedText": "the performer presses Space",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759024614392_o0s6s7l7n"
+    },
+    {
+      "type": "selection",
+      "comment": "UI features to create a track and play a loop is out of scope for this user story.",
+      "timestamp": "2025-09-28T02:10:52.375Z",
+      "selectedText": "2. GIVEN the count-in is active, THEN the UI exposes a countdown status (e.g., `4-3-2-1` or progress indicator) and cancels if recording is interrupted (e.g., Space pressed again before count-in completes).",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#ffeb3b",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759024804841_tst1f6qgh"
+    },
+    {
+      "type": "selection",
+      "comment": "GIVEN state `Recording`, WHEN Space is pressed, THEN recording should be canceled immediately, transitions to `Idle`, and clear triggered events.",
+      "timestamp": "2025-09-28T02:05:20.932Z",
+      "selectedText": "2. GIVEN state `Recording`, WHEN Space is pressed, THEN recording stops immediately, transitions to `Playing`, and any events triggered before the stop are retained.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759025120932_emmseoo2g"
+    },
+    {
+      "type": "selection",
+      "comment": "UI features to create a track and play a loop is out of scope for this user story.",
+      "timestamp": "2025-09-28T02:10:33.691Z",
+      "selectedText": "### Requirement 6 – Transport & UI feedback\n**User Story:** As a performer, I want unambiguous UI feedback for Ready/Recording/Playing so that I can perform without guesswork.\n\n#### Acceptance Criteria\n1. GIVEN any lifecycle state, THEN the transport strip shows the active state (`Ready`, `Recording`, `Playing`) with color and text cues consistent with existing steering guidelines.\n2. GIVEN state transitions occur, THEN the Pads screen updates within one frame (≤50 ms) to reflect the new state.\n3. GIVEN the metronome count-in or playback is active, THEN there is no overlapping or stale UI indicator lingering after the state changes.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759025433691_yfpc66zpf"
+    },
+    {
+      "type": "selection",
+      "comment": "Without resetting a loop by an user, loop content should survive app restarts.",
+      "timestamp": "2025-09-28T02:13:21.036Z",
+      "selectedText": "- Clarify persistence expectations: is loop content ephemeral per session or should it survive app restarts?",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759025601036_bfq36upq7"
+    }
+  ]
+}

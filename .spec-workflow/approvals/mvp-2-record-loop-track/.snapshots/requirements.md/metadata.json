@@ -1,0 +1,30 @@
+{
+  "filePath": ".spec-workflow/specs/mvp-2-record-loop-track/requirements.md",
+  "currentVersion": 3,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-09-28T01:51:42.633Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759024302623_te9xab92l",
+      "approvalTitle": "Requirements draft for mvp-2-record-loop-track"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-09-28T02:13:23.215Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1759024302623_te9xab92l",
+      "approvalTitle": "Requirements draft for mvp-2-record-loop-track"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-09-28T02:16:23.259Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759025666741_alvgosett",
+      "approvalTitle": "Requirements v2 for mvp-2-record-loop-track"
+    }
+  ]
+}
