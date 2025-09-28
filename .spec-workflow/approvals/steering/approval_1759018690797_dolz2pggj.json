@@ -1,0 +1,21 @@
+{
+  "id": "approval_1759018690797_dolz2pggj",
+  "title": "Structure steering doc for TermiGroove",
+  "filePath": ".spec-workflow/steering/structure.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T00:18:10.797Z",
+  "category": "steering",
+  "categoryName": "steering",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. Mention `.serena/` directory that is also useful MCP tool for agentic coding. See https://github.com/oraios/serena as a reference.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"Mention `.serena/` directory that is also useful MCP tool for agentic coding. See https://github.com/oraios/serena as a reference.\",\n      \"timestamp\": \"2025-09-28T00:20:45.193Z\",\n      \"id\": \"comment_1759018845193_vaojm2h13\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. Mention `.serena/` directory that is also useful MCP tool for agentic coding. See https://github.com/oraios/serena as a reference.\\n\\n\",\n  \"timestamp\": \"2025-09-28T00:22:28.676Z\"\n}",
+  "respondedAt": "2025-09-28T00:22:28.695Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "Mention `.serena/` directory that is also useful MCP tool for agentic coding. See https://github.com/oraios/serena as a reference.",
+      "timestamp": "2025-09-28T00:20:45.193Z",
+      "id": "comment_1759018845193_vaojm2h13"
+    }
+  ]
+}

@@ -1,66 +1,47 @@
 # Product Overview
 
 ## Product Purpose
-DJing, samplers, and drum machines are great entry points into music creation, but expensive hardware/software creates high barriers to access. TermiGroove reduces this barrier by providing a retro‑futuristic, minimal TUI sampler that enables people to combine, blend, and shape samples like creative materials, and to share both creations and the creative process in real time.
+TermiGroove delivers a keyboard-driven terminal music workstation that lets small groups in Japan’s Gen Z scene co-create loops and tracks without expensive hardware. It lowers the cost and complexity of live sample performance while preserving a retro-futuristic vibe that feels intentional and professional.
 
 ## Target Users
-- Men and women in their 20s living in Japan
-- Small groups who hang out together and want to co‑create music in real time using only their laptops
-- Newcomers to music making seeking a low‑friction, portable entry point
+- 20-somethings in Japan who already gather socially around laptops and music discovery
+- Developers, tinkerers, and AI collaborators who prefer command-line tools but still want expressive audio workflows
+- Bedroom DJs who need a portable setup for impromptu jams without controllers or DAW licenses
 
 ## Key Features
-1. **TUI Sampler (minimal, retro‑futuristic design)**: Fast, keyboard‑driven sampling and playback.
-2. **Real‑time Co‑creation Sessions**: Share sample sources and collaboratively jam with friends.
-3. **Laptop‑only Portability & Simple Onboarding**: No expensive hardware; quick to start and share.
+1. **Terminal-First Live Looping**: Map up to eight samples to pads, trigger them in real time, and manage volume/mute/solo entirely from the keyboard.
+2. **Tempo & Timing Control**: Central BPM engine with bar-length configuration keeps all tracks in sync during performance.
+3. **Integrated Audio Engine**: Rust-based CPAL pipeline handles loading, mixing, and playback with professional-grade reliability.
+4. **File Explorer Workflow**: Ratatui Explorer integration streamlines browsing and assigning local audio files inside the TUI.
 
 ## Business Objectives
-- Enable accessible, social music creation experiences on commodity laptops.
-- Catalyze group co‑creation behaviors that drive retention and organic growth.
-- Achieve initial traction with the target demographic in Japan and expand via word‑of‑mouth.
+- Validate that a terminal-native music workstation resonates with early adopter groups in Japan.
+- Achieve measurable social creation moments that differentiate TermiGroove from traditional DAWs.
+- Build a sustainable foundation for future paid features (remote sessions, advanced effects).
 
 ## Success Metrics
-**Acquisition & Onboarding**
-- Achieve 10,000 MAUs among 20s in Japan within the first year.
-- Reach 30% week‑1 retention for new users after onboarding.
-
-**Engagement & Usage**
-- ≥ 50% of active users participate in a group session at least once per month.
-- Average session length ≥ 20 minutes for co‑creation sessions.
-
-**Social & Sharing**
-- 40% of created tracks/jams are shared in real time with at least one other user or group.
-- 20,000 shared creations within the first year.
-
-**Community & Growth**
-- Build a base of 500 groups (3+ users who regularly co‑create together).
-- 5% monthly organic growth driven by peer sharing.
+- Monthly active users: 10,000 MAU within year one among 20-somethings in Japan.
+- Week-one retention: 30% of new users continue sessions after onboarding.
+- Group co-creation: 50% of active users participate in at least one group jam per month.
+- Sharing: 40% of created tracks shared in real time, targeting 20,000 shared creations in first year.
+- Community: 500 recurring groups with ≥3 members, sustaining 5% monthly organic growth.
 
 ## Product Principles
-1. **Accessibility over Gear**: Prioritize low setup cost and portability over specialized hardware.
-2. **Simplicity & Flow**: Minimal, keyboard‑first UX to keep users in creative flow.
-3. **Social by Design**: Encourage sharing of both outputs and process to strengthen connections.
+1. **Keyboard Mastery**: Every core workflow must be executable without a mouse, reinforcing speed and focus.
+2. **Retro-Futuristic Clarity**: Visual design embraces neon TUI aesthetics while keeping information dense yet legible.
+3. **Reliability Through TDD**: Ship only when specs, tests, and documentation align, preserving confidence in live sets.
+4. **Inclusive Collaboration**: Encourage sessions where multiple people (or agents) can participate without specialized gear.
 
 ## Monitoring & Visibility (if applicable)
-- **Dashboard Type**: TUI panels for levels, transport, and session state; optional CLI exports.
-- **Real‑time Updates**: Event‑driven updates within the TUI.
-- **Key Metrics Displayed**: Session length, active participants, samples used, share events.
-- **Sharing Capabilities**: Export/share session states and recorded jams; future read‑only links.
+- **Dashboard Type**: Native TUI dashboard showing track states, BPM, resource usage, and session context.
+- **Real-time Updates**: Continuous render loop with keyboard-driven refresh; future roadmap includes websocket bridge for remote mirroring.
+- **Key Metrics Displayed**: Track activity, BPM, loop bars, volume meters, session status, and system performance indicators.
+- **Sharing Capabilities**: Planned export of session state and jam logs; roadmap includes read-only shared views via secure tunnel.
 
 ## Future Vision
-TermiGroove evolves into a platform for live, collaborative sampling. Near‑term focus: robust playback, snappy TUI ergonomics, and delightful sharing that “just works.”
+TermiGroove evolves into a collaborative music surface that spans local sessions, remote co-creation, and AI-assisted arrangement while remaining terminal-native and affordable. It becomes the go-to tool for spontaneous jams, livestream prep, and human+AI performance experiments.
 
 ### Potential Enhancements
-- **Remote Access**: Out of scope for alpha; focus is offline, co‑located sessions.
-- **Analytics**: Session history, usage trends, and performance metrics for improvements.
-- **Collaboration**: Multi‑user session controls, commenting, and presence cues.
-
----
-
-### References
-- Overview: [Notion – Overview](https://www.notion.so/2634150965e480438b15f73b40bf0574)
-- Workspace Hub: [Notion – alpha: TermiGroove TUI Music App](https://www.notion.so/2634150965e480a69230ccde9b706a4e)
-- Epics: [Notion – Epics](https://www.notion.so/26e4150965e480b891b1e383410557f1)
-- User Stories: [Notion – User Stories](https://www.notion.so/26f4150965e4806daf22c835c7311825)
-- Tasks: [Notion – Tasks](https://www.notion.so/26f4150965e480039caeceeaf6f6d64c)
-
-
+- **Remote Access**: Secure session sharing over tunnels so off-site collaborators can view or influence a jam.
+- **Analytics**: Capture historical BPM, loop, and track usage to inform set improvements and community insights.
+- **Collaboration**: Multi-user editing, presence indicators, and shared sample libraries to speed up group creativity.

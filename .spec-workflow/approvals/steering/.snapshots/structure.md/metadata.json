@@ -1,0 +1,30 @@
+{
+  "filePath": ".spec-workflow/steering/structure.md",
+  "currentVersion": 3,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-09-28T00:18:10.824Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759018690797_dolz2pggj",
+      "approvalTitle": "Structure steering doc for TermiGroove"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-09-28T00:22:28.692Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1759018690797_dolz2pggj",
+      "approvalTitle": "Structure steering doc for TermiGroove"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-09-28T00:33:00.942Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759019531132_w8z1fttt7",
+      "approvalTitle": "Structure steering doc for TermiGroove - revision"
+    }
+  ]
+}

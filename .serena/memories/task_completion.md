@@ -1,0 +1,1 @@
+Finish development by ensuring `cargo test`, `cargo clippy`, and `cargo fmt` pass. Run `npm run test:e2e` for UI verification if relevant. Update associated Notion task/status and spec-workflow decision log. Do not commit while tests are red; request approvals through spec workflow when document changes require it.
