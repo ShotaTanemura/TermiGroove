@@ -2,6 +2,7 @@ mod app_state;
 mod audio;
 mod input;
 mod selection;
+mod state;
 mod ui;
 
 use anyhow::Result;
@@ -45,7 +46,7 @@ fn main() -> Result<()> {
     loop {
         terminal.draw(|f| ui::draw_ui(f, &state))?;
 
-        if event::poll(std::time::Duration::from_millis(50))? {
+        if event::poll(std::time::Duration::from_millis(1))? {
             match event::read()? {
                 Event::Key(key) => {
                     // Delegate handling; handler will update state.status_message
@@ -65,6 +66,8 @@ fn main() -> Result<()> {
                 }
             }
         }
+
+        state.update_loop();
     }
 
     // Restore terminal

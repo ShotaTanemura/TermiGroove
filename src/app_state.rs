@@ -1,10 +1,12 @@
 use crate::audio::{AudioCommand, spawn_audio_thread};
 use crate::selection::SelectionModel;
+use crate::state::loop_engine::{LoopEngine, LoopState, SenderAudioBus, SystemClock};
 use ratatui::widgets::{Block, BorderType, Borders};
 use ratatui_explorer::FileExplorer;
 use ratatui_explorer::Theme as ExplorerTheme;
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
+use std::sync::mpsc::Sender;
 use tui_input::Input as TextInput;
 
 const HELP_LINE: &str =
@@ -37,7 +39,8 @@ pub struct AppState {
     pub current_left_is_dir: bool,
     pub file_explorer: FileExplorer,
     pub pads: PadsState,
-    pub audio_tx: std::sync::mpsc::Sender<AudioCommand>,
+    pub audio_tx: Sender<AudioCommand>,
+    loop_engine: LoopEngine<SenderAudioBus, SystemClock>,
     // --- Global tempo & loop state ---
     bpm: u16,
     bars: u16,
@@ -62,6 +65,16 @@ pub struct SampleSlot {
 
 impl AppState {
     pub fn new() -> anyhow::Result<Self> {
+        let audio_tx = spawn_audio_thread();
+        let bus = SenderAudioBus::new(audio_tx.clone());
+        let loop_engine = LoopEngine::new(SystemClock::new(), bus);
+        Self::from_components(audio_tx, loop_engine)
+    }
+
+    pub fn from_components(
+        audio_tx: Sender<AudioCommand>,
+        loop_engine: LoopEngine<SenderAudioBus, SystemClock>,
+    ) -> anyhow::Result<Self> {
         let theme = ExplorerTheme::default()
             .add_default_title()
             .with_block(
@@ -71,18 +84,17 @@ impl AppState {
             )
             .with_title_bottom(|_| HELP_LINE.into());
         let file_explorer = FileExplorer::with_theme(theme)?;
-        let audio_tx = spawn_audio_thread();
         Ok(Self {
             mode: Mode::Browse,
             focus: FocusPane::LeftExplorer,
             status_message: "Ready".to_string(),
-            selection: Default::default(),
+            selection: SelectionModel::default(),
             current_left_item: None,
             current_left_is_dir: false,
             file_explorer,
             pads: PadsState::default(),
             audio_tx,
-            // tempo/loop defaults
+            loop_engine,
             bpm: 120,
             bars: 16,
             is_popup_open: false,
@@ -90,6 +102,33 @@ impl AppState {
             draft_bpm: TextInput::new(120.to_string()),
             draft_bars: TextInput::new(16.to_string()),
         })
+    }
+
+    pub fn update_loop(&mut self) {
+        self.loop_engine.update();
+    }
+
+    pub fn handle_loop_space(&mut self) {
+        self.loop_engine.handle_space(self.bpm, self.bars);
+    }
+
+    pub fn record_loop_event(&mut self, key: char) {
+        if !matches!(self.loop_engine.state(), LoopState::Recording { .. }) {
+            let _ = self.audio_tx.send(AudioCommand::Play { key });
+        }
+        self.loop_engine.record_event(key);
+    }
+
+    pub fn reset_loop_for_tempo(&mut self) {
+        self.loop_engine.reset_for_new_tempo(self.bpm, self.bars);
+    }
+
+    pub fn cancel_loop(&mut self) {
+        self.loop_engine.handle_cancel();
+    }
+
+    pub fn loop_state(&self) -> LoopState {
+        self.loop_engine.state()
     }
 
     pub fn toggle_focus(&mut self) {
@@ -226,11 +265,23 @@ impl AppState {
 
     pub fn close_bpm_bars_popup(&mut self, apply: bool) {
         if apply {
+            let mut changed = false;
             if let Ok(bpm) = self.draft_bpm.value().parse::<u16>() {
+                let before = self.bpm;
                 self.set_bpm(bpm);
+                if self.bpm != before {
+                    changed = true;
+                }
             }
             if let Ok(bars) = self.draft_bars.value().parse::<u16>() {
+                let before = self.bars;
                 self.set_bars(bars);
+                if self.bars != before {
+                    changed = true;
+                }
+            }
+            if changed {
+                self.reset_loop_for_tempo();
             }
         }
         self.is_popup_open = false;

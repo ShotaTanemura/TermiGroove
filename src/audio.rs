@@ -1,8 +1,10 @@
 use rodio::{Decoder, OutputStream, Sink, Source, buffer::SamplesBuffer};
 use std::collections::BTreeMap;
+use std::f32::consts::PI;
 use std::fs;
 use std::io::Cursor;
 use std::path::PathBuf;
+use std::sync::Arc;
 use std::sync::mpsc::{self, Sender};
 use std::thread;
 
@@ -10,18 +12,51 @@ use std::thread;
 pub enum AudioCommand {
     Preload { key: char, path: PathBuf },
     Play { key: char },
+    PlayLoop { key: char },
+    PlayMetronome,
 }
 
 #[derive(Clone)]
 struct DecodedSample {
     channels: u16,
     sample_rate: u32,
-    samples: std::sync::Arc<Vec<f32>>, // decoded PCM in f32
+    samples: Arc<Vec<f32>>, // decoded PCM in f32
 }
 
 impl DecodedSample {
     fn to_source(&self) -> SamplesBuffer<f32> {
         SamplesBuffer::new(self.channels, self.sample_rate, (*self.samples).clone())
+    }
+}
+
+// Generate a short synthesized metronome tick (sine with quick decay).
+fn metronome_sample() -> DecodedSample {
+    const SAMPLE_RATE: u32 = 44_100;
+    const CHANNELS: u16 = 1;
+    const DURATION_MS: u32 = 70;
+    const FREQ: f32 = 1_000.0;
+
+    let total_samples = (SAMPLE_RATE as u64 * DURATION_MS as u64 / 1_000) as usize;
+    let mut data = Vec::with_capacity(total_samples);
+    for n in 0..total_samples {
+        let t = n as f32 / SAMPLE_RATE as f32;
+        // Simple attack/decay envelope
+        let attack = 0.005f32;
+        let release = (DURATION_MS as f32 / 1_000.0) - attack;
+        let env = if t < attack {
+            t / attack
+        } else if t > release {
+            ((DURATION_MS as f32 / 1_000.0) - t).max(0.0) / (DURATION_MS as f32 / 1_000.0 - release)
+        } else {
+            1.0
+        };
+        let sample = (2.0 * PI * FREQ * t).sin() * env * 0.4;
+        data.push(sample);
+    }
+    DecodedSample {
+        channels: CHANNELS,
+        sample_rate: SAMPLE_RATE,
+        samples: Arc::new(data),
     }
 }
 
@@ -40,6 +75,7 @@ pub fn spawn_audio_thread() -> Sender<AudioCommand> {
 
         let mut cache: BTreeMap<char, DecodedSample> = BTreeMap::new();
         let mut sinks: Vec<Sink> = Vec::new();
+        let metronome = metronome_sample();
 
         while let Ok(cmd) = rx.recv() {
             match cmd {
@@ -56,7 +92,7 @@ pub fn spawn_audio_thread() -> Sender<AudioCommand> {
                                     DecodedSample {
                                         channels,
                                         sample_rate,
-                                        samples: std::sync::Arc::new(samples),
+                                        samples: Arc::new(samples),
                                     },
                                 );
                             }
@@ -69,20 +105,25 @@ pub fn spawn_audio_thread() -> Sender<AudioCommand> {
                         eprintln!("[audio] Failed to read {}: {err:?}", path.display());
                     }
                 },
-                AudioCommand::Play { key } => {
+                AudioCommand::Play { key } | AudioCommand::PlayLoop { key } => {
                     if let Some(decoded) = cache.get(&key) {
                         match Sink::try_new(&stream_handle) {
                             Ok(sink) => {
-                                let source = decoded.to_source();
-                                sink.append(source);
+                                sink.append(decoded.to_source());
                                 sinks.push(sink);
-                                // Optional: prune finished sinks to avoid unbounded growth
                                 sinks.retain(|s| !s.empty());
                             }
                             Err(err) => eprintln!("[audio] Failed to create Sink: {err:?}"),
                         }
                     } else {
                         eprintln!("[audio] Play requested for key '{}' but not cached", key);
+                    }
+                }
+                AudioCommand::PlayMetronome => {
+                    if let Ok(sink) = Sink::try_new(&stream_handle) {
+                        sink.append(metronome.to_source());
+                        sinks.push(sink);
+                        sinks.retain(|s| !s.empty());
                     }
                 }
             }
@@ -104,7 +145,9 @@ mod tests {
             key: 'q',
             path: PathBuf::from("/no/such/file.wav"),
         });
-        // Play for non-cached key; should not panic either
+        // Play variants should not panic either
         let _ = tx.send(AudioCommand::Play { key: 'q' });
+        let _ = tx.send(AudioCommand::PlayLoop { key: 'q' });
+        let _ = tx.send(AudioCommand::PlayMetronome);
     }
 }

@@ -1,0 +1,87 @@
+{
+  "id": "approval_1759026152244_9m97alr70",
+  "title": "Design draft for mvp-2-record-loop-track",
+  "filePath": ".spec-workflow/specs/mvp-2-record-loop-track/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T02:22:32.244Z",
+  "category": "spec",
+  "categoryName": "mvp-2-record-loop-track",
+  "response": "Feedback Summary (6 comments):\n\nSpecific Text Comments:\n1. \"- Loop persistence: save loop events to disk in a ...\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\n2. \"- Persist data via a new helper under `src/state/l...\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\n3. \"- **Persistence**: add simple JSON file under `~/....\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\n4. \"- Metronome ticks are emitted using a preloaded sa...\": Use generated short beep\n5. \"### Persistence\n- After each successful recording,...\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\n6. \"### Component 2 – `LoopStorage`\n- **Purpose:** Per...\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\",\n      \"timestamp\": \"2025-09-28T02:28:17.584Z\",\n      \"selectedText\": \"- Loop persistence: save loop events to disk in a simple binary/JSON format and reload on startup.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026497584_pgyxejbsy\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\",\n      \"timestamp\": \"2025-09-28T02:29:25.901Z\",\n      \"selectedText\": \"- Persist data via a new helper under `src/state/loop_storage.rs` to follow single-responsibility.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026565901_lpnirmkjc\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\",\n      \"timestamp\": \"2025-09-28T02:30:03.167Z\",\n      \"selectedText\": \"- **Persistence**: add simple JSON file under `~/.config/termigroove/loops/current_loop.json` (configurable) using `serde` to serialize `RecordedEvent` structs.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026603167_m2l0lti0v\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Use generated short beep\",\n      \"timestamp\": \"2025-09-28T02:31:28.648Z\",\n      \"selectedText\": \"- Metronome ticks are emitted using a preloaded sample or generated short beep; four ticks triggered via `AudioCommand::PlayMetronome` spaced by `clock.interval_from_bpm(bpm)`.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026688648_zz1cdyeut\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\",\n      \"timestamp\": \"2025-09-28T02:31:52.513Z\",\n      \"selectedText\": \"### Persistence\\n- After each successful recording, serialize `LoopSnapshot { bpm, bars, events }` to disk.\\n- On application start (AppState::new), load existing snapshot if BPM/bars match current configuration; otherwise prompt re-record (per requirements, playing a stale loop after tempo change is not supported).\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026712514_nnya2xvr8\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\",\n      \"timestamp\": \"2025-09-28T02:33:04.330Z\",\n      \"selectedText\": \"### Component 2 – `LoopStorage`\\n- **Purpose:** Persist/load loop snapshots to/from disk, ensuring durability across restarts.\\n- **Interfaces:** `fn load() -> anyhow::Result<Option<LoopSnapshot>>`, `fn save(snapshot: &LoopSnapshot) -> anyhow::Result<()>`, `fn reset() -> anyhow::Result<()>`.\\n- **Dependencies:** `std::fs`, `serde_json`, optional `dirs` crate for config path.\\n- **Reuses:** `LoopSnapshot` struct defined in engine module.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759026784330_flka3ixv1\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (6 comments):\\n\\nSpecific Text Comments:\\n1. \\\"- Loop persistence: save loop events to disk in a ...\\\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\\n2. \\\"- Persist data via a new helper under `src/state/l...\\\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\\n3. \\\"- **Persistence**: add simple JSON file under `~/....\\\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\\n4. \\\"- Metronome ticks are emitted using a preloaded sa...\\\": Use generated short beep\\n5. \\\"### Persistence\\n- After each successful recording,...\\\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\\n6. \\\"### Component 2 – `LoopStorage`\\n- **Purpose:** Per...\\\": CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.\\n\",\n  \"timestamp\": \"2025-09-28T02:33:46.527Z\"\n}",
+  "respondedAt": "2025-09-28T02:33:46.537Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.",
+      "timestamp": "2025-09-28T02:28:17.584Z",
+      "selectedText": "- Loop persistence: save loop events to disk in a simple binary/JSON format and reload on startup.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026497584_pgyxejbsy"
+    },
+    {
+      "type": "selection",
+      "comment": "CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.",
+      "timestamp": "2025-09-28T02:29:25.901Z",
+      "selectedText": "- Persist data via a new helper under `src/state/loop_storage.rs` to follow single-responsibility.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026565901_lpnirmkjc"
+    },
+    {
+      "type": "selection",
+      "comment": "CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.",
+      "timestamp": "2025-09-28T02:30:03.167Z",
+      "selectedText": "- **Persistence**: add simple JSON file under `~/.config/termigroove/loops/current_loop.json` (configurable) using `serde` to serialize `RecordedEvent` structs.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026603167_m2l0lti0v"
+    },
+    {
+      "type": "selection",
+      "comment": "Use generated short beep",
+      "timestamp": "2025-09-28T02:31:28.648Z",
+      "selectedText": "- Metronome ticks are emitted using a preloaded sample or generated short beep; four ticks triggered via `AudioCommand::PlayMetronome` spaced by `clock.interval_from_bpm(bpm)`.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026688648_zz1cdyeut"
+    },
+    {
+      "type": "selection",
+      "comment": "CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.",
+      "timestamp": "2025-09-28T02:31:52.513Z",
+      "selectedText": "### Persistence\n- After each successful recording, serialize `LoopSnapshot { bpm, bars, events }` to disk.\n- On application start (AppState::new), load existing snapshot if BPM/bars match current configuration; otherwise prompt re-record (per requirements, playing a stale loop after tempo change is not supported).",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026712514_nnya2xvr8"
+    },
+    {
+      "type": "selection",
+      "comment": "CORRECTION: Loop events should be discarded when they are outdated. Avoid to saving to disk.",
+      "timestamp": "2025-09-28T02:33:04.330Z",
+      "selectedText": "### Component 2 – `LoopStorage`\n- **Purpose:** Persist/load loop snapshots to/from disk, ensuring durability across restarts.\n- **Interfaces:** `fn load() -> anyhow::Result<Option<LoopSnapshot>>`, `fn save(snapshot: &LoopSnapshot) -> anyhow::Result<()>`, `fn reset() -> anyhow::Result<()>`.\n- **Dependencies:** `std::fs`, `serde_json`, optional `dirs` crate for config path.\n- **Reuses:** `LoopSnapshot` struct defined in engine module.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759026784330_flka3ixv1"
+    }
+  ]
+}
