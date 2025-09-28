@@ -1,0 +1,1 @@
+TermiGroove is a Rust-based terminal UI (TUI) music workstation that lets users load audio samples, map them to pads, and perform live looping and mixing entirely from the keyboard. The project targets laptops (macOS focus) and aims for a retro-futuristic, performance-ready experience integrating audio playback, mixing, BPM control, and terminal UI visualizations.

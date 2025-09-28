@@ -1,0 +1,1 @@
+Primary language Rust 2024 edition with Cargo. Core crates include crossterm and ratatui for terminal UI, tui-input and tui-popup for text/popup widgets, rodio/cpal-based audio engine, and ratatui-explorer for file navigation. Node-based tooling exists for @microsoft/tui-test E2E tests (package.json scripts run tui-test). Target toolchain pinned to rustc 1.89.0.
