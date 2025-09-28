@@ -2,7 +2,7 @@ use ratatui::crossterm::event::{Event, KeyCode, KeyEvent};
 
 use crate::app_state::AppState;
 use crate::app_state::{Mode, PopupFocus};
-use crate::audio::AudioCommand;
+use crate::state::loop_engine::LoopState;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tui_input::InputRequest;
 use tui_input::backend::crossterm::to_input_request;
@@ -139,8 +139,20 @@ fn handle_pads_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<
 
     match key.code {
         KeyCode::Esc => {
+            state.cancel_loop();
             state.mode = Mode::Browse;
             state.status_message = "Back to browse".to_string();
+            Ok(())
+        }
+        KeyCode::Char(' ') => {
+            match state.loop_state() {
+                LoopState::Idle => {
+                    state.handle_loop_space();
+                }
+                _ => {
+                    state.cancel_loop();
+                }
+            }
             Ok(())
         }
         KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
@@ -171,7 +183,7 @@ fn handle_pads_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<
             }
             state.pads.last_press_ms.insert(k, now_ms);
             state.pads.active_keys.insert(k);
-            let _ = state.audio_tx.send(AudioCommand::Play { key: k });
+            state.record_loop_event(k);
             Ok(())
         }
         _ => Ok(()),
