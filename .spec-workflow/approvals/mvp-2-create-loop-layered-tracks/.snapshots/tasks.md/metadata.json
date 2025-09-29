@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/mvp-2-create-loop-layered-tracks/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-09-28T14:40:43.922Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759070443908_20mb2se2c",
+      "approvalTitle": "Review tasks for mvp-2-create-loop-layered-tracks"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-09-28T15:40:25.729Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759070443908_20mb2se2c",
+      "approvalTitle": "Review tasks for mvp-2-create-loop-layered-tracks"
+    }
+  ]
+}

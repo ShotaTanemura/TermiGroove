@@ -1,0 +1,27 @@
+{
+  "id": "approval_1759058410352_32mme00j5",
+  "title": "Review requirements for mvp-2-create-loop-layered-tracks",
+  "filePath": ".spec-workflow/specs/mvp-2-create-loop-layered-tracks/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T11:20:10.353Z",
+  "category": "spec",
+  "categoryName": "mvp-2-create-loop-layered-tracks",
+  "response": "Feedback Summary (2 comments):\n\nGeneral Comments:\n1. When recording a new track to overdub onto one or more existing tracks that already form a loop, the metronome must not be activated.\n2. When recording a new track to overdub onto one or more existing tracks that already form a loop, the specification allows recording of the new track to begin simply by pressing the key corresponding to the sample, without needing to press the space bar.\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"When recording a new track to overdub onto one or more existing tracks that already form a loop, the metronome must not be activated.\",\n      \"timestamp\": \"2025-09-28T13:11:58.289Z\",\n      \"id\": \"comment_1759065118289_fsbjnhfuc\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"When recording a new track to overdub onto one or more existing tracks that already form a loop, the specification allows recording of the new track to begin simply by pressing the key corresponding to the sample, without needing to press the space bar.\",\n      \"timestamp\": \"2025-09-28T13:13:20.547Z\",\n      \"id\": \"comment_1759065200547_n6uky089q\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nGeneral Comments:\\n1. When recording a new track to overdub onto one or more existing tracks that already form a loop, the metronome must not be activated.\\n2. When recording a new track to overdub onto one or more existing tracks that already form a loop, the specification allows recording of the new track to begin simply by pressing the key corresponding to the sample, without needing to press the space bar.\\n\\n\",\n  \"timestamp\": \"2025-09-28T13:13:24.402Z\"\n}",
+  "respondedAt": "2025-09-28T13:13:24.452Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "When recording a new track to overdub onto one or more existing tracks that already form a loop, the metronome must not be activated.",
+      "timestamp": "2025-09-28T13:11:58.289Z",
+      "id": "comment_1759065118289_fsbjnhfuc"
+    },
+    {
+      "type": "general",
+      "comment": "When recording a new track to overdub onto one or more existing tracks that already form a loop, the specification allows recording of the new track to begin simply by pressing the key corresponding to the sample, without needing to press the space bar.",
+      "timestamp": "2025-09-28T13:13:20.547Z",
+      "id": "comment_1759065200547_n6uky089q"
+    }
+  ]
+}

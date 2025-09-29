@@ -45,6 +45,28 @@
 | PS-002 | Ply | `Clock` advances past multiple cycles | Engine wraps and schedules commands per cycle | Start times stay consistent |
 | PS-003 | Ply, no events | `Clock` | No commands emitted | Idle playback allowed |
 
+## Layered Overdub Scenarios
+| ID | Given | When | Then | Notes |
+|----|-------|------|------|-------|
+| LO-001 | Ply with ≥1 tracks, overdub inactive | Performer presses pad `key` | State → Rec, record event `(key, offset_ms)` at exact in-cycle offset, no metronome ticks issued | Requirement 1 & 2 |
+| LO-002 | Rec (overdub active) | Loop length elapses | Commit overdub: create new `LoopTrack` with stored events, append to track list, resume Ply | Track metadata drives design LoopTrack |
+| LO-003 | Rec (overdub active) | Performer presses Space | Stop recording immediately, commit current events, state → Ply | Manual punch-out |
+| LO-004 | Rec (overdub active) | Audio command send fails | Abort commit, discard in-flight track, log error | Aligns with Error Scenario 1 |
+
+## Pause / Resume / Clear Transport
+| ID | Given | When | Then | Notes |
+|----|-------|------|------|-------|
+| PR-001 | Ply with layered tracks | Space pressed | State → Paused, suppress scheduled playback until resume, snapshot `is_paused=true` | Requirement 4 |
+| PR-002 | Paused layered loop | Space pressed | State → Ply, resume playback on next cycle boundary with all tracks intact | Requirement 4 |
+| CL-001 | Ply or Paused | Control+Space pressed | Clear all tracks, reset state → Idle, flush pending audio commands | Requirement 4 |
+
+## Backpressure & Invalid Inputs
+| ID | Given | When | Then | Notes |
+|----|-------|------|------|-------|
+| BP-001 | Rec or Ply | Audio command channel fills | Log warning, abort overdub commit, keep previous tracks intact | Mirrors Error Scenario 1 |
+| IV-001 | Idle (no loop armed) | Performer presses pad | Ignore input, emit debug log, remain Idle | Prevent accidental overdub |
+| IV-002 | Paused loop | Performer attempts overdub start via pad | Return `InvalidState` error; remain Paused | Guard against conflicting states |
+
 ## Reliability / Failure Modes
 | ID | Given | When | Then | Notes |
 |----|-------|------|------|-------|
@@ -63,10 +85,17 @@
 - `tests/loop_engine/loop_happy_path.rs` – validates end-to-end lifecycle and metronome integrity
 - `tests/loop_engine/loop_cancel.rs` – enforces Ready/Recording cancellation behavior
 - `tests/loop_engine/loop_bpm_reset.rs` – guards tempo/bars reset semantics
+- `tests/loop_engine/loop_overdub_layers.rs` – layered overdub scheduling and track commit coverage
+- `tests/loop_engine/loop_pause_resume.rs` – pause/resume transport validation for layered loops
+- `tests/loop_engine/loop_clear.rs` – Control+Space clear and reset coverage
 - `tests/app_state_loop.rs` – integration coverage for AppState wiring and metronome stop behavior
 - `tests/e2e/loop_capture.test.ts` – user-level verification of loop capture flow in the TUI
+- `tests/e2e/loop_overdub_layers.test.ts` – end-to-end layering workflow, pause/resume, clear commands
 
 ## Open Questions
 1. Should status text show countdown ticks numerically (requires minor UI work)?
 2. How to surface errors from AudioBus on metronome generation failure (status vs. log)?
 3. Do we need throttle on cancel spam (Space mashing) or is instantaneous transitions acceptable?
+4. How should layered tracks be named or numbered for future UI surfacing? (e.g., sequential IDs vs. pad-based labels)
+5. Are there memory or duration caps we must enforce on accumulated LoopTracks?
+6. Should audio backpressure warnings be exposed to performers or remain internal diagnostics?

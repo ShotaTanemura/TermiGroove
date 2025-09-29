@@ -1,0 +1,39 @@
+{
+  "id": "approval_1759066977586_wlmkqwyis",
+  "title": "Review design for mvp-2-create-loop-layered-tracks",
+  "filePath": ".spec-workflow/specs/mvp-2-create-loop-layered-tracks/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T13:42:57.586Z",
+  "category": "spec",
+  "categoryName": "mvp-2-create-loop-layered-tracks",
+  "response": "Feedback Summary (2 comments):\n\nSpecific Text Comments:\n1. \"### UI transport section\n- **Purpose:** Display lo...\": Implementations of UI is out of scope for this phase.\n2. \"- **User Impact:** UI maintains current state; deb...\": Implementations of UI is out of scope for this phase.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Implementations of UI is out of scope for this phase.\",\n      \"timestamp\": \"2025-09-28T14:14:57.964Z\",\n      \"selectedText\": \"### UI transport section\\n- **Purpose:** Display loop state (Playing/Paused/Recording), track count, and warnings.\\n- **Interfaces:**\\n  - `render_loop_status(loop_snapshot)` -> draws state using ratatui widgets.\\n- **Dependencies:** Ratatui components, AppState snapshot.\\n- **Reuses:** Existing status badge components.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#ffeb3b\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759068879022_mc34lvow3\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Implementations of UI is out of scope for this phase.\",\n      \"timestamp\": \"2025-09-28T14:15:38.162Z\",\n      \"selectedText\": \"- **User Impact:** UI maintains current state; debug log explains ignored command.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759068938162_3f8c035sc\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nSpecific Text Comments:\\n1. \\\"### UI transport section\\n- **Purpose:** Display lo...\\\": Implementations of UI is out of scope for this phase.\\n2. \\\"- **User Impact:** UI maintains current state; deb...\\\": Implementations of UI is out of scope for this phase.\\n\",\n  \"timestamp\": \"2025-09-28T14:15:48.579Z\"\n}",
+  "respondedAt": "2025-09-28T14:15:48.625Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "Implementations of UI is out of scope for this phase.",
+      "timestamp": "2025-09-28T14:14:57.964Z",
+      "selectedText": "### UI transport section\n- **Purpose:** Display loop state (Playing/Paused/Recording), track count, and warnings.\n- **Interfaces:**\n  - `render_loop_status(loop_snapshot)` -> draws state using ratatui widgets.\n- **Dependencies:** Ratatui components, AppState snapshot.\n- **Reuses:** Existing status badge components.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#ffeb3b",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759068879022_mc34lvow3"
+    },
+    {
+      "type": "selection",
+      "comment": "Implementations of UI is out of scope for this phase.",
+      "timestamp": "2025-09-28T14:15:38.162Z",
+      "selectedText": "- **User Impact:** UI maintains current state; debug log explains ignored command.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759068938162_3f8c035sc"
+    }
+  ]
+}

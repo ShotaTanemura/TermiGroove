@@ -1,0 +1,38 @@
+{
+  "filePath": ".spec-workflow/specs/mvp-2-create-loop-layered-tracks/requirements.md",
+  "currentVersion": 4,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-09-28T11:20:10.362Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759058410352_32mme00j5",
+      "approvalTitle": "Review requirements for mvp-2-create-loop-layered-tracks"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-09-28T13:13:24.447Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1759058410352_32mme00j5",
+      "approvalTitle": "Review requirements for mvp-2-create-loop-layered-tracks"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-09-28T13:34:59.953Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1759065306319_9a7glrsf8",
+      "approvalTitle": "Review updated requirements for mvp-2-create-loop-layered-tracks"
+    },
+    {
+      "version": 4,
+      "filename": "snapshot-004.json",
+      "timestamp": "2025-09-28T13:39:57.155Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759066561928_j3wdc05m2",
+      "approvalTitle": "Review revised requirements for mvp-2-create-loop-layered-tracks"
+    }
+  ]
+}
