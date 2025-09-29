@@ -15,9 +15,7 @@ fn key_event_with_modifiers(
     code: ratatui::crossterm::event::KeyCode,
     modifiers: ratatui::crossterm::event::KeyModifiers,
 ) -> ratatui::crossterm::event::Event {
-    ratatui::crossterm::event::Event::Key(
-        ratatui::crossterm::event::KeyEvent::new(code, modifiers),
-    )
+    ratatui::crossterm::event::Event::Key(ratatui::crossterm::event::KeyEvent::new(code, modifiers))
 }
 
 fn drain_commands(rx: &mpsc::Receiver<AudioCommand>) -> Vec<AudioCommand> {
@@ -168,9 +166,12 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     update_until(&mut state, |_| false, 10);
     wait_ms(20);
     let commands_paused = drain_commands(&rx);
-    assert!(commands_paused
-        .iter()
-        .all(|cmd| !matches!(cmd, AudioCommand::PlayLoop { .. })), "no loop playback while paused");
+    assert!(
+        commands_paused
+            .iter()
+            .all(|cmd| !matches!(cmd, AudioCommand::PlayLoop { .. })),
+        "no loop playback while paused"
+    );
 
     // Resume with Space.
     input::handle_event(
@@ -184,12 +185,18 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     update_until(&mut state, |_| false, 10);
     wait_ms(20);
     let commands_resume = drain_commands(&rx);
-    assert!(commands_resume
-        .iter()
-        .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'q' })), "base track resumes playback");
-    assert!(commands_resume
-        .iter()
-        .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'w' })), "overdub track resumes playback");
+    assert!(
+        commands_resume
+            .iter()
+            .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'q' })),
+        "base track resumes playback"
+    );
+    assert!(
+        commands_resume
+            .iter()
+            .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'w' })),
+        "overdub track resumes playback"
+    );
 
     // Control+Space should clear everything.
     input::handle_event(
@@ -208,10 +215,12 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     thread::sleep(Duration::from_millis(20));
     let commands = drain_commands(&rx);
 
-    assert!(commands
-        .iter()
-        .all(|cmd| !matches!(cmd, AudioCommand::PlayLoop { .. })),
-        "no loop playback after clear");
+    assert!(
+        commands
+            .iter()
+            .all(|cmd| !matches!(cmd, AudioCommand::PlayLoop { .. })),
+        "no loop playback after clear"
+    );
 }
 
 #[test]
@@ -241,11 +250,13 @@ fn space_during_recording_stops_without_new_metronome() {
     thread::sleep(Duration::from_millis(20));
     let commands = drain_commands(&rx);
 
-    assert!(commands
-        .iter()
-        .filter(|cmd| matches!(cmd, AudioCommand::PlayMetronome))
-        .count()
-        >= 4);
+    assert!(
+        commands
+            .iter()
+            .filter(|cmd| matches!(cmd, AudioCommand::PlayMetronome))
+            .count()
+            >= 4
+    );
 }
 
 #[test]

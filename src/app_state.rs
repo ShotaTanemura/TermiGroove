@@ -125,8 +125,16 @@ impl AppState {
             LoopState::Idle => "Loop idle".to_string(),
             LoopState::Ready { .. } => "Loop ready".to_string(),
             LoopState::Recording { .. } => "Loop recording".to_string(),
-            LoopState::Playing { .. } => format!("Loop playing ({} track{})", track_count, if track_count == 1 { "" } else { "s" }),
-            LoopState::Paused { .. } => format!("Loop paused ({} track{})", track_count, if track_count == 1 { "" } else { "s" }),
+            LoopState::Playing { .. } => format!(
+                "Loop playing ({} track{})",
+                track_count,
+                if track_count == 1 { "" } else { "s" }
+            ),
+            LoopState::Paused { .. } => format!(
+                "Loop paused ({} track{})",
+                track_count,
+                if track_count == 1 { "" } else { "s" }
+            ),
         };
     }
 

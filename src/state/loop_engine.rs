@@ -188,10 +188,7 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
                 self.paused = false;
                 return;
             }
-            LoopState::Recording {
-                loop_length,
-                ..
-            } => {
+            LoopState::Recording { loop_length, .. } => {
                 let now = self.clock.now();
                 self.commit_recording(loop_length, now);
                 return;
@@ -222,8 +219,7 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
                 let offset = now.saturating_sub(start_time);
                 self.audio.play_pad(key);
                 self.overdub_buffer.push(RecordedEvent { key, offset });
-                self.overdub_buffer
-                    .sort_by_key(|event| event.offset);
+                self.overdub_buffer.sort_by_key(|event| event.offset);
             }
             LoopState::Playing {
                 cycle_start,
