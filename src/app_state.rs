@@ -110,6 +110,19 @@ impl AppState {
 
     pub fn handle_loop_space(&mut self) {
         self.loop_engine.handle_space(self.bpm, self.bars);
+        self.update_status_for_loop_state();
+    }
+
+    fn update_status_for_loop_state(&mut self) {
+        let loop_state = self.loop_engine.state();
+        let track_count = self.loop_engine.tracks_count();
+        self.status_message = match loop_state {
+            LoopState::Idle => "Loop idle".to_string(),
+            LoopState::Ready { .. } => "Loop ready".to_string(),
+            LoopState::Recording { .. } => "Loop recording".to_string(),
+            LoopState::Playing { .. } => format!("Loop playing ({} track{})", track_count, if track_count == 1 { "" } else { "s" }),
+            LoopState::Paused { .. } => format!("Loop paused ({} track{})", track_count, if track_count == 1 { "" } else { "s" }),
+        };
     }
 
     pub fn record_loop_event(&mut self, key: char) {
@@ -117,6 +130,7 @@ impl AppState {
             let _ = self.audio_tx.send(AudioCommand::Play { key });
         }
         self.loop_engine.record_event(key);
+        self.update_status_for_loop_state();
     }
 
     pub fn reset_loop_for_tempo(&mut self) {
@@ -125,10 +139,12 @@ impl AppState {
 
     pub fn cancel_loop(&mut self) {
         self.loop_engine.handle_cancel();
+        self.status_message = "Loop cancelled".to_string();
     }
 
-    pub fn loop_state(&self) -> LoopState {
-        self.loop_engine.state()
+    pub fn clear_loop(&mut self) {
+        self.loop_engine.handle_control_space();
+        self.status_message = "Loop cleared".to_string();
     }
 
     pub fn toggle_focus(&mut self) {

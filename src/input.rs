@@ -1,8 +1,7 @@
-use ratatui::crossterm::event::{Event, KeyCode, KeyEvent};
+use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 
 use crate::app_state::AppState;
 use crate::app_state::{Mode, PopupFocus};
-use crate::state::loop_engine::LoopState;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tui_input::InputRequest;
 use tui_input::backend::crossterm::to_input_request;
@@ -144,15 +143,12 @@ fn handle_pads_key_event(state: &mut AppState, key: KeyEvent) -> anyhow::Result<
             state.status_message = "Back to browse".to_string();
             Ok(())
         }
+        KeyCode::Char(' ') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+            state.clear_loop();
+            Ok(())
+        }
         KeyCode::Char(' ') => {
-            match state.loop_state() {
-                LoopState::Idle => {
-                    state.handle_loop_space();
-                }
-                _ => {
-                    state.cancel_loop();
-                }
-            }
+            state.handle_loop_space();
             Ok(())
         }
         KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
