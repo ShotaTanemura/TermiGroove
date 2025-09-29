@@ -108,6 +108,10 @@ impl AppState {
         self.loop_engine.update();
     }
 
+    pub fn loop_state(&self) -> LoopState {
+        self.loop_engine.state()
+    }
+
     pub fn handle_loop_space(&mut self) {
         self.loop_engine.handle_space(self.bpm, self.bars);
         self.update_status_for_loop_state();
