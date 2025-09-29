@@ -108,6 +108,7 @@ impl AppState {
         self.loop_engine.update();
     }
 
+    #[allow(dead_code)]
     pub fn loop_state(&self) -> LoopState {
         self.loop_engine.state()
     }
