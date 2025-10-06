@@ -1,0 +1,27 @@
+{
+  "id": "approval_1759065306319_9a7glrsf8",
+  "title": "Review updated requirements for mvp-2-create-loop-layered-tracks",
+  "filePath": ".spec-workflow/specs/mvp-2-create-loop-layered-tracks/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-09-28T13:15:06.319Z",
+  "category": "spec",
+  "categoryName": "mvp-2-create-loop-layered-tracks",
+  "response": "Feedback Summary (1 comments):\n\nSpecific Text Comments:\n1. \"3. WHEN an overdub is initiated by the first pad p...\": If a user presses a key corresponding to a sample while a loop composed of one or more tracks is playing, record that input as an event at the point in the loop where it occurred, rather than linking it to the beginning of the loop.\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"If a user presses a key corresponding to a sample while a loop composed of one or more tracks is playing, record that input as an event at the point in the loop where it occurred, rather than linking it to the beginning of the loop.\",\n      \"timestamp\": \"2025-09-28T13:29:02.739Z\",\n      \"selectedText\": \"3. WHEN an overdub is initiated by the first pad press, THEN the loop engine SHALL anchor the overdub start to the active cycle boundary so subsequent playback aligns with prior tracks.\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1759066142739_4cct76wis\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nSpecific Text Comments:\\n1. \\\"3. WHEN an overdub is initiated by the first pad p...\\\": If a user presses a key corresponding to a sample while a loop composed of one or more tracks is playing, record that input as an event at the point in the loop where it occurred, rather than linking it to the beginning of the loop.\\n\",\n  \"timestamp\": \"2025-09-28T13:34:59.914Z\"\n}",
+  "respondedAt": "2025-09-28T13:34:59.958Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "If a user presses a key corresponding to a sample while a loop composed of one or more tracks is playing, record that input as an event at the point in the loop where it occurred, rather than linking it to the beginning of the loop.",
+      "timestamp": "2025-09-28T13:29:02.739Z",
+      "selectedText": "3. WHEN an overdub is initiated by the first pad press, THEN the loop engine SHALL anchor the overdub start to the active cycle boundary so subsequent playback aligns with prior tracks.",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1759066142739_4cct76wis"
+    }
+  ]
+}
