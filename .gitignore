@@ -33,3 +33,5 @@ tui-traces
 # Audio
 *.wav
 
+# Spec Workflow
+.spec-workflow/session.json
