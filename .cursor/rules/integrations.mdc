@@ -45,6 +45,12 @@ alwaysApply: true
     Bring up-to-date, version-specific docs and examples for libraries/APIs.
     Always append “use context7” to prompts that need library docs or snippets.
   </tool>
+  <tool name="sequential-thinking" preferred="true">
+    Reflective step-by-step planner to decompose tasks, revise earlier steps, and branch approaches.
+    Call: sequential_thinking({ thought, thoughtNumber, totalThoughts, nextThoughtNeeded, isRevision?, revisesThought?, branchFromThought?, branchId? }).
+    Use it to generate/adjust action steps for epics/tasks; record final decisions in spec-workflow and sync status/links to Notion.
+  </tool>
+
 </tools>
 
 <!-- Development Guardrails -->
