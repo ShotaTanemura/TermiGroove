@@ -1,0 +1,1 @@
+Task 7 completed: README updated with Pause & Resume controls; design.md includes decision log entry summarizing LoopEngine pause/resume snapshot and AudioCommand additions. Notion user story marked Done.

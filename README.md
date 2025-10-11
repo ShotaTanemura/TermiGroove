@@ -26,6 +26,12 @@ npx tui-test tests/e2e/loop_capture.test.ts
 6. After the loop length elapses, playback repeats automatically.
 7. Press `Space` again to stop the loop and return to Idle; `Esc` exits Pads mode.
 
+## Pause & Resume Controls
+
+- Press `Space` while playback or recording is running to pause immediately. The loop transitions to `LoopState::Paused`, sends `PauseAll` to halt audio sinks without pops, and the summary banner shows `PAUSED` in yellow.
+- Press `Space` again to resume. The loop realigns using the stored offset so playback and overdubs restart within ≤1 ms drift, and the UI status clears the paused indicator.
+- Other shortcuts (e.g., `Ctrl+Space` to clear, navigation keys in Browse mode) continue to behave normally during the pause feature and never emit pause commands.
+
 ## Metronome & Timing Notes
 
 - Timing is driven by a `Clock` abstraction so tests can inject deterministic time.
