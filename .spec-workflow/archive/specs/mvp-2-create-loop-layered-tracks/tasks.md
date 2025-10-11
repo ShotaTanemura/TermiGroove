@@ -83,7 +83,7 @@
   - _Prompt: Role: E2E Automation Engineer | Task: Create failing e2e test covering layered overdub workflow using tui-test harness | Restrictions: Deterministic key sequences; no UI redesign_
   - _Success: New e2e test fails because layering is not yet wired end-to-end_
 
-- [ ] 11. Green #5 — end-to-end wiring & cleanup
+- [x] 11. Green #5 — end-to-end wiring & cleanup
   - File: src/app_state.rs, src/input.rs, src/audio.rs, docs/tdd/loop_engine/behavior-matrix.md (updates)
   - Ensure e2e layering test passes; adjust audio scheduling or tracing as needed; update behavior matrix with any discovered cases
   - _Leverage: tests/e2e/loop_overdub_layers.test.ts, design.md Architecture_

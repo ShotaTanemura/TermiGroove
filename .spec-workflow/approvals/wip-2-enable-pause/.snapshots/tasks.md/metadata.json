@@ -1,0 +1,46 @@
+{
+  "filePath": ".spec-workflow/specs/wip-2-enable-pause/tasks.md",
+  "currentVersion": 5,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-06T16:03:02.519Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759766582446_3jxp619tg",
+      "approvalTitle": "Tasks for spec wip-2-enable-pause"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-06T16:18:22.695Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759766582446_3jxp619tg",
+      "approvalTitle": "Tasks for spec wip-2-enable-pause"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-10-11T04:42:49.850Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759940317910_kab1engeg",
+      "approvalTitle": "Task 4 – Audio command plumbing for PauseAll"
+    },
+    {
+      "version": 4,
+      "filename": "snapshot-004.json",
+      "timestamp": "2025-10-11T04:42:51.607Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759961885395_xejv726tc",
+      "approvalTitle": "Task 5 – PauseAll integration test"
+    },
+    {
+      "version": 5,
+      "filename": "snapshot-005.json",
+      "timestamp": "2025-10-11T07:48:59.448Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760157249830_0qqtzhywe",
+      "approvalTitle": "Task 6 – Regression guards and paused UX"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/wip-2-enable-pause/requirements.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-06T15:11:54.123Z",
+      "trigger": "initial",
+      "approvalId": "approval_1759763514048_eh9o157px",
+      "approvalTitle": "Requirements for spec wip-2-enable-pause"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-06T15:20:03.918Z",
+      "trigger": "approved",
+      "approvalId": "approval_1759763514048_eh9o157px",
+      "approvalTitle": "Requirements for spec wip-2-enable-pause"
+    }
+  ]
+}

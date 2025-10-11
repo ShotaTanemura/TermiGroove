@@ -13,6 +13,7 @@ use tui_big_text::{BigText, PixelSize};
 use tui_popup::{Popup, SizedWidgetRef};
 
 use crate::app_state::{AppState, FocusPane, Mode, PopupFocus};
+use crate::state::loop_engine::LoopState;
 
 const HEADER_TITLE: &str = "WELCOME TO TERMIGROOVE";
 const HEADER_SUBTITLE: &str = "Load your samples...";
@@ -295,7 +296,7 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
         (Borders::NONE, Style::default(), None)
     };
 
-    let content_lines = 2;
+    let content_lines = 3;
     let minimal_height = content_lines + 2;
     let focus_rect = Rect {
         x: ring_rect.x,
@@ -331,10 +332,11 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
     let labels = Paragraph::new(vec![
         Line::from(Span::styled("bpm:", Style::default().fg(Color::Green))),
         Line::from(Span::styled("bars:", Style::default().fg(Color::Green))),
+        Line::from(Span::styled("state:", Style::default().fg(Color::Green))),
     ])
     .alignment(Alignment::Left);
 
-    let values = Paragraph::new(vec![
+    let mut value_lines = vec![
         Line::from(Span::styled(
             state.get_bpm().to_string(),
             Style::default().fg(Color::Green),
@@ -343,8 +345,29 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
             state.get_bars().to_string(),
             Style::default().fg(Color::Green),
         )),
-    ])
-    .alignment(Alignment::Right);
+    ];
+    let (label, style) = match state.loop_state() {
+        LoopState::Paused { .. } => (
+            "PAUSED",
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD | Modifier::REVERSED),
+        ),
+        LoopState::Playing { .. } => (
+            "playing",
+            Style::default()
+                .fg(Color::Green)
+                .add_modifier(Modifier::BOLD),
+        ),
+        LoopState::Recording { .. } => (
+            "recording",
+            Style::default().fg(Color::Red).add_modifier(Modifier::BOLD),
+        ),
+        LoopState::Ready { .. } => ("ready", Style::default().fg(Color::Green)),
+        LoopState::Idle => ("idle", Style::default().fg(Color::White)),
+    };
+    value_lines.push(Line::from(Span::styled(label, style)));
+    let values = Paragraph::new(value_lines).alignment(Alignment::Right);
 
     // Render content
     frame.render_widget(labels, left);

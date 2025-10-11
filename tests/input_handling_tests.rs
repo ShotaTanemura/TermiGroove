@@ -1,7 +1,12 @@
-use ratatui::crossterm::event::KeyCode;
-use ratatui::crossterm::event::KeyEvent;
-use termigroove::app_state::{AppState, Mode, PopupFocus};
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
+use termigroove::app_state::{AppState, FocusPane, Mode, PopupFocus, SampleSlot};
+use termigroove::audio::AudioCommand;
 use termigroove::input::handle_event;
+use termigroove::state::loop_engine::{LoopEngine, LoopState, SenderAudioBus, SystemClock};
 
 #[test]
 fn arrow_focuses_summary_box_and_enter_opens_popup() {
@@ -310,9 +315,6 @@ fn popup_esc_discard_and_cancel_button_restore_previous_values() {
     assert!(!state.is_bpm_popup_open());
 }
 
-use ratatui::crossterm::event::{Event, KeyModifiers};
-use termigroove::app_state::FocusPane;
-
 fn key(code: KeyCode) -> Event {
     Event::Key(KeyEvent::new(code, KeyModifiers::empty()))
 }
@@ -388,4 +390,83 @@ fn right_pane_remove_space_delete_d() {
     state.selection.add_file("/tmp/b.wav".into());
     handle_event(&mut state, key(KeyCode::Char('d'))).unwrap();
     assert_eq!(state.selection.items.len(), 1);
+}
+
+fn key_with_mod(code: KeyCode, modifiers: KeyModifiers) -> Event {
+    Event::Key(KeyEvent::new(code, modifiers))
+}
+
+fn advance_until<F>(state: &mut AppState, predicate: F, iters: usize)
+where
+    F: Fn(LoopState) -> bool,
+{
+    for _ in 0..iters {
+        state.update_loop();
+        if predicate(state.loop_state()) {
+            break;
+        }
+        thread::sleep(Duration::from_millis(5));
+    }
+}
+
+fn setup_loop_state() -> (AppState, std::sync::mpsc::Receiver<AudioCommand>) {
+    let (tx, rx) = mpsc::channel();
+    let bus = SenderAudioBus::new(tx.clone());
+    let loop_engine = LoopEngine::new(SystemClock::new(), bus);
+    let mut state = AppState::from_components(tx, loop_engine).expect("init");
+    state.mode = Mode::Pads;
+    state.set_bpm(240);
+    state.set_bars(1);
+    state.pads.key_to_slot.insert(
+        'q',
+        SampleSlot {
+            file_name: "kick.wav".into(),
+        },
+    );
+    (state, rx)
+}
+
+#[test]
+fn ctrl_space_clears_without_pausing() {
+    let (mut state, rx) = setup_loop_state();
+
+    handle_event(&mut state, key(KeyCode::Char(' '))).unwrap();
+    advance_until(&mut state, |ls| matches!(ls, LoopState::Ready { .. }), 50);
+    advance_until(
+        &mut state,
+        |ls| matches!(ls, LoopState::Recording { .. }),
+        50,
+    );
+    handle_event(&mut state, key(KeyCode::Char('q'))).unwrap();
+    advance_until(&mut state, |ls| matches!(ls, LoopState::Playing { .. }), 50);
+
+    handle_event(
+        &mut state,
+        key_with_mod(KeyCode::Char(' '), KeyModifiers::CONTROL),
+    )
+    .unwrap();
+
+    assert!(matches!(state.loop_state(), LoopState::Idle));
+    assert_eq!(state.status_message, "Loop cleared");
+
+    drop(state);
+    thread::sleep(Duration::from_millis(20));
+    let cmds = rx.try_iter().collect::<Vec<_>>();
+    assert!(
+        cmds.iter()
+            .all(|cmd| !matches!(cmd, AudioCommand::PauseAll))
+    );
+}
+
+#[test]
+fn browse_space_selection_does_not_pause() {
+    let mut state = AppState::new().expect("init");
+    state.mode = Mode::Browse;
+    state.current_left_item = Some("/tmp/a.wav".into());
+    state.current_left_is_dir = false;
+
+    handle_event(&mut state, key(KeyCode::Char(' '))).unwrap();
+
+    assert!(matches!(state.loop_state(), LoopState::Idle));
+    assert!(!state.status_message.contains("paused"));
 }
