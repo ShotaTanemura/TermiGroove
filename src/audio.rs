@@ -14,6 +14,8 @@ pub enum AudioCommand {
     Play { key: char },
     PlayLoop { key: char },
     PlayMetronome,
+    PauseAll,
+    ResumeAll,
 }
 
 #[derive(Clone)]
@@ -126,6 +128,18 @@ pub fn spawn_audio_thread() -> Sender<AudioCommand> {
                         sinks.retain(|s| !s.empty());
                     }
                 }
+                AudioCommand::PauseAll => {
+                    sinks.retain(|sink| {
+                        sink.pause();
+                        true
+                    });
+                }
+                AudioCommand::ResumeAll => {
+                    sinks.retain(|sink| {
+                        sink.play();
+                        true
+                    });
+                }
             }
         }
         eprintln!("[audio] receiver closed; audio thread exiting");
@@ -149,5 +163,6 @@ mod tests {
         let _ = tx.send(AudioCommand::Play { key: 'q' });
         let _ = tx.send(AudioCommand::PlayLoop { key: 'q' });
         let _ = tx.send(AudioCommand::PlayMetronome);
+        let _ = tx.send(AudioCommand::PauseAll);
     }
 }

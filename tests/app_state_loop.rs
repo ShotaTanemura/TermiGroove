@@ -1,6 +1,6 @@
 use std::sync::mpsc;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use termigroove::app_state::{AppState, Mode, SampleSlot};
 use termigroove::audio::AudioCommand;
@@ -154,6 +154,7 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     update_until(&mut state, |s| matches!(s, LoopState::Playing { .. }), 60);
 
     // Space should pause.
+    drain_commands(&rx);
     input::handle_event(
         &mut state,
         key_event(ratatui::crossterm::event::KeyCode::Char(' ')),
@@ -162,10 +163,26 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     assert!(matches!(state.loop_state(), LoopState::Paused { .. }));
 
     // While paused, no playback occurs.
-    drain_commands(&rx);
-    update_until(&mut state, |_| false, 10);
-    wait_ms(20);
-    let commands_paused = drain_commands(&rx);
+    update_until(&mut state, |_| false, 30);
+    wait_ms(50);
+    let mut commands_paused = Vec::new();
+    let pause_deadline = Instant::now() + Duration::from_millis(800);
+    while Instant::now() < pause_deadline {
+        commands_paused.extend(drain_commands(&rx));
+        if commands_paused
+            .iter()
+            .any(|cmd| matches!(cmd, AudioCommand::PauseAll))
+        {
+            break;
+        }
+        wait_ms(5);
+    }
+    assert!(
+        commands_paused
+            .iter()
+            .any(|cmd| matches!(cmd, AudioCommand::PauseAll)),
+        "expected PauseAll to be emitted when pausing"
+    );
     assert!(
         commands_paused
             .iter()
@@ -182,21 +199,54 @@ fn app_state_handles_pause_resume_and_clear_commands() {
     assert!(matches!(state.loop_state(), LoopState::Playing { .. }));
 
     // Allow scheduling to confirm playback resumes.
-    update_until(&mut state, |_| false, 10);
-    wait_ms(20);
-    let commands_resume = drain_commands(&rx);
-    assert!(
-        commands_resume
-            .iter()
-            .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'q' })),
-        "base track resumes playback"
+    let mut commands_resume: Vec<AudioCommand> = Vec::new();
+    let resume_deadline = Instant::now() + Duration::from_secs(3);
+    while Instant::now() < resume_deadline {
+        state.update_loop();
+        wait_ms(5);
+        let drained = drain_commands(&rx);
+        if drained.is_empty() {
+            continue;
+        }
+        let base_resumed = drained.iter().any(|cmd| {
+            matches!(
+                cmd,
+                AudioCommand::PlayLoop { key: 'q' } | AudioCommand::Play { key: 'q' }
+            )
+        });
+        let overdub_resumed = drained.iter().any(|cmd| {
+            matches!(
+                cmd,
+                AudioCommand::PlayLoop { key: 'w' } | AudioCommand::Play { key: 'w' }
+            )
+        });
+        commands_resume.extend(drained);
+        if base_resumed && overdub_resumed {
+            break;
+        }
+    }
+    let pause_all_after_resume = commands_resume
+        .iter()
+        .filter(|cmd| matches!(cmd, AudioCommand::PauseAll))
+        .count();
+    assert_eq!(
+        pause_all_after_resume, 0,
+        "should not emit PauseAll after resume"
     );
-    assert!(
-        commands_resume
-            .iter()
-            .any(|cmd| matches!(cmd, AudioCommand::PlayLoop { key: 'w' })),
-        "overdub track resumes playback"
-    );
+    let mut base_resumed = false;
+    let mut overdub_resumed = false;
+    for cmd in &commands_resume {
+        match cmd {
+            AudioCommand::PlayLoop { key } | AudioCommand::Play { key } => match key {
+                'q' => base_resumed = true,
+                'w' => overdub_resumed = true,
+                _ => {}
+            },
+            _ => {}
+        }
+    }
+    assert!(base_resumed, "base track resumes playback");
+    assert!(overdub_resumed, "overdub track resumes playback");
 
     // Control+Space should clear everything.
     input::handle_event(

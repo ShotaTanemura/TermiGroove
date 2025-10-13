@@ -36,6 +36,8 @@ pub trait AudioBus: Clone {
     fn play_metronome_beep(&self);
     fn play_pad(&self, key: char);
     fn play_scheduled(&self, key: char);
+    fn pause_all(&self) {}
+    fn resume_all(&self) {}
 }
 
 #[derive(Clone)]
@@ -61,6 +63,14 @@ impl AudioBus for SenderAudioBus {
     fn play_scheduled(&self, key: char) {
         let _ = self.tx.send(AudioCommand::PlayLoop { key });
     }
+
+    fn pause_all(&self) {
+        let _ = self.tx.send(AudioCommand::PauseAll);
+    }
+
+    fn resume_all(&self) {
+        let _ = self.tx.send(AudioCommand::ResumeAll);
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -81,6 +91,8 @@ pub enum LoopState {
     Paused {
         cycle_start: Duration,
         loop_length: Duration,
+        saved_offset: Duration,
+        was_recording: bool,
     },
 }
 
@@ -133,6 +145,18 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
     pub fn tracks_count(&self) -> usize {
         self.tracks.len()
     }
+
+    fn realign_track_positions(&mut self, saved_offset: Duration, loop_length: Duration) {
+        for track in &mut self.tracks {
+            let idx = track
+                .events
+                .iter()
+                .position(|event| normalize_offset(event.offset, loop_length) >= saved_offset)
+                .unwrap_or(track.events.len());
+            track.next_event_index = idx;
+        }
+    }
+
     fn commit_recording(&mut self, loop_length: Duration, now: Duration) {
         let events = std::mem::take(&mut self.overdub_buffer);
         if !events.is_empty() {
@@ -170,27 +194,59 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
                 cycle_start,
                 loop_length,
             } => {
+                let now = self.clock.now();
+                let elapsed = now.saturating_sub(cycle_start);
+                let saved_offset = normalize_offset(elapsed, loop_length);
                 self.state = LoopState::Paused {
                     cycle_start,
                     loop_length,
+                    saved_offset,
+                    was_recording: false,
                 };
                 self.paused = true;
+                self.audio.pause_all();
                 return;
             }
             LoopState::Paused {
-                cycle_start,
                 loop_length,
+                saved_offset,
+                was_recording,
+                ..
             } => {
-                self.state = LoopState::Playing {
-                    cycle_start,
-                    loop_length,
-                };
+                self.audio.resume_all();
+                let now = self.clock.now();
+                let new_cycle_start = now.saturating_sub(saved_offset);
+                self.realign_track_positions(saved_offset, loop_length);
+                if was_recording {
+                    self.state = LoopState::Recording {
+                        start_time: new_cycle_start,
+                        loop_length,
+                    };
+                } else {
+                    self.state = LoopState::Playing {
+                        cycle_start: new_cycle_start,
+                        loop_length,
+                    };
+                }
                 self.paused = false;
                 return;
             }
-            LoopState::Recording { loop_length, .. } => {
+            LoopState::Recording {
+                start_time,
+                loop_length,
+            } => {
                 let now = self.clock.now();
-                self.commit_recording(loop_length, now);
+                let elapsed = now.saturating_sub(start_time);
+                let saved_offset = normalize_offset(elapsed, loop_length);
+                self.realign_track_positions(saved_offset, loop_length);
+                self.state = LoopState::Paused {
+                    cycle_start: start_time,
+                    loop_length,
+                    saved_offset,
+                    was_recording: true,
+                };
+                self.paused = true;
+                self.audio.pause_all();
                 return;
             }
             _ => return,
@@ -316,7 +372,8 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
                 start_time,
                 loop_length,
             } => {
-                if now.saturating_sub(start_time) >= loop_length {
+                let elapsed = now.saturating_sub(start_time);
+                if elapsed >= loop_length {
                     self.commit_recording(loop_length, now);
                 }
             }
@@ -329,7 +386,12 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
                     for track in &mut self.tracks {
                         while track.next_event_index < track.events.len() {
                             let event = &track.events[track.next_event_index];
-                            if elapsed >= event.offset {
+                            let event_offset = if event.offset >= loop_length {
+                                normalize_offset(event.offset, loop_length)
+                            } else {
+                                event.offset
+                            };
+                            if elapsed >= event_offset {
                                 self.audio.play_scheduled(event.key);
                                 track.next_event_index += 1;
                             } else {
@@ -361,4 +423,16 @@ fn loop_length_from(bpm: u16, bars: u16) -> Duration {
 
 fn beat_interval_ms(bpm: u16) -> Duration {
     Duration::from_secs_f64(60.0 / bpm as f64)
+}
+
+fn normalize_offset(elapsed: Duration, loop_length: Duration) -> Duration {
+    if loop_length.is_zero() {
+        return Duration::ZERO;
+    }
+    let loop_nanos = loop_length.as_nanos();
+    if loop_nanos == 0 {
+        return Duration::ZERO;
+    }
+    let remainder = elapsed.as_nanos() % loop_nanos;
+    Duration::from_nanos(remainder as u64)
 }
