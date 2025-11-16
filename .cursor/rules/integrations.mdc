@@ -1,7 +1,6 @@
 ---
 description: Integrations
-globs:
-alwaysApply: true
+alwaysApply: false
 ---
 <!-- Purpose -->
 <purpose>
