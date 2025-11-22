@@ -1,6 +1,6 @@
-use crate::audio::{AudioCommand, spawn_audio_thread};
+use crate::audio::{AudioCommand, spawn_audio_thread, SenderAudioBus, SystemClock};
 use crate::selection::SelectionModel;
-use crate::state::loop_engine::{LoopEngine, LoopState, SenderAudioBus, SystemClock};
+use crate::state::loop_engine::{LoopEngine, LoopState};
 use ratatui::widgets::{Block, BorderType, Borders};
 use ratatui_explorer::FileExplorer;
 use ratatui_explorer::Theme as ExplorerTheme;
