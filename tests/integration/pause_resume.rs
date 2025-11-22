@@ -4,10 +4,10 @@ use std::sync::mpsc;
 use std::time::Duration;
 
 use termigroove::app_state::{AppState, Mode, SampleSlot};
-use termigroove::audio::AudioCommand;
+use termigroove::audio::{AudioCommand, SenderAudioBus};
 use termigroove::input;
 use termigroove::domain::ports::Clock;
-use termigroove::state::loop_engine::{LoopEngine, LoopState, SenderAudioBus};
+use termigroove::state::loop_engine::{LoopEngine, LoopState};
 
 #[derive(Clone)]
 struct TestClock {
