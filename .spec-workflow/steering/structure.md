@@ -4,14 +4,16 @@
 
 ```
 TermiGroove/
-├── src/                      # Rust source (state, audio, UI, input, selection modules)
+├── src/                      # Rust source (domain, state, audio, UI, input, selection modules)
+│   ├── domain/               # Domain layer: core business logic interfaces (ports)
+│   │   └── ports.rs          # Port trait definitions (Clock, AudioBus, etc.)
 │   ├── app_state.rs          # Global application state & focus models
-│   ├── audio.rs              # Audio engine commands, thread management, CPAL integration
+│   ├── audio.rs              # Audio engine commands, thread management, CPAL integration (infrastructure/adapter)
 │   ├── input.rs              # Keyboard and event handling, focus routing
 │   ├── selection.rs          # File selection modeling for pads workflow
 │   ├── ui.rs                 # ratatui rendering for explorer, pads, summary/popup
 │   ├── main.rs               # Binary entrypoint wiring terminal loop
-│   └── state/                # Supporting state models (if present)
+│   └── state/                # Supporting state models (domain logic)
 ├── tests/                    # Rust integration/unit tests and TUI e2e harness
 │   ├── app_state_tests.rs    # Unit tests for AppState behavior
 │   ├── input_handling_tests.rs
@@ -54,6 +56,7 @@ TermiGroove/
 
 ### Module/Package Organization
 - Prefer absolute crate paths (`crate::audio::AudioCommand`).
+- Domain layer ports imported as `crate::domain::ports::{Clock, AudioBus}`.
 - Cross-module access done through public methods on `AppState` rather than exposing inner fields.
 - Tests import modules with `use termigroove::*` or direct module references.
 
@@ -78,17 +81,33 @@ TermiGroove/
 - Tests colocated by concern (AppState tests interact with state behaviors only).
 
 ## Code Organization Principles
-1. **Single Responsibility**: Each module owns a distinct concern (state vs UI vs audio).
-2. **Separation of Concerns**: Input handlers mutate `AppState`; UI reads from state.
-3. **Testability**: Public getters/setters enable unit and integration testing without UI coupling.
-4. **Predictability**: Clamping and validation centralized to avoid duplicated logic.
+1. **Domain-Driven Design**: Domain layer (`src/domain/`) defines port traits (interfaces) that domain logic depends on. Infrastructure layer (`src/audio.rs`, `src/state/`) provides concrete implementations (adapters).
+2. **Dependency Inversion**: Domain layer does not depend on infrastructure; infrastructure implements domain ports.
+3. **Single Responsibility**: Each module owns a distinct concern (domain vs state vs UI vs audio).
+4. **Separation of Concerns**: Input handlers mutate `AppState`; UI reads from state.
+5. **Testability**: Public getters/setters enable unit and integration testing without UI coupling. Port traits enable dependency injection for testing.
+6. **Predictability**: Clamping and validation centralized to avoid duplicated logic.
 
 ## Module Boundaries
+
+### Layer Architecture
+- **Domain Layer** (`src/domain/`): Defines port traits (interfaces) that domain logic requires. Contains no implementations, only trait definitions.
+- **State Layer** (`src/state/`): Contains domain logic implementations (e.g., `LoopEngine`) that depend on domain ports via trait bounds.
+- **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
+
+### Dependency Rules
+- Domain layer has no dependencies on infrastructure or state layers.
+- State layer depends on domain layer (imports port traits).
+- Infrastructure layer depends on domain layer (implements port traits).
+- Domain layer does not import from infrastructure layer.
+
+### Module Interactions
 - `AppState` is the central source of truth; other modules depend on it via public APIs.
 - `audio` module only receives commands, never directly reads UI state.
 - `ui` module renders based on read-only state access; no side effects.
 - `input` owns translating events into state mutations and audio commands.
 - Tests may mock or simulate audio via channel senders, keeping coupling low.
+- Tests implement port traits (e.g., `FakeClock`, `AudioBusMock`) to isolate domain logic.
 
 ## Code Size Guidelines
 - Aim to keep modules under ~400 lines; split when adding major features.

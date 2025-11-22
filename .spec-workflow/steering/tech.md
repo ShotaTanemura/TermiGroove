@@ -21,7 +21,15 @@ Terminal-based music workstation and live looping instrument built as a cross-pl
 - **@microsoft/tui-test**: Node-based end-to-end testing harness
 
 ### Application Architecture
-Modular monolith with dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
+Modular monolith following Domain-Driven Design (DDD) and Ports & Adapters (Hexagonal Architecture) patterns:
+
+- **Domain Layer** (`src/domain/`): Defines port traits (interfaces) that domain logic requires. Contains no implementations, only trait definitions (e.g., `Clock`, `AudioBus`).
+- **State Layer** (`src/state/`): Contains domain logic implementations (e.g., `LoopEngine`) that depend on domain ports via trait bounds.
+- **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
+
+Dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
+
+**Dependency Rule**: Domain layer has no dependencies on infrastructure or state layers. Infrastructure and state layers depend on domain layer (implement/use port traits).
 
 ### Data Storage (if applicable)
 - **Primary storage**: In-memory structures; audio files read from local filesystem on demand
@@ -94,6 +102,11 @@ Modular monolith with dedicated modules for state management (`app_state`), audi
 1. **Rust + ratatui for TUI**: Provides performance, safety, and expressive terminal rendering; alternatives like Python curses lacked performance.
 2. **CPAL/Rodio audio stack**: Cross-platform audio with low-level control, enabling precise looping and mixing.
 3. **Strict TDD workflow**: Ensures confidence for live performance features and aligns with Notion-driven spec process.
+4. **Domain-Driven Design with Ports & Adapters**: Introduces domain layer (`src/domain/ports.rs`) to define port traits (interfaces) that domain logic depends on. This enables:
+   - **Dependency Inversion**: Domain logic doesn't depend on infrastructure; infrastructure implements domain interfaces.
+   - **Testability**: Port traits enable dependency injection, allowing test doubles (e.g., `FakeClock`, `AudioBusMock`) to isolate domain logic.
+   - **Maintainability**: Clear separation between business logic (domain) and technical concerns (infrastructure).
+   - **Flexibility**: Infrastructure implementations can be swapped without changing domain logic.
 
 ## Known Limitations
 - **Headless Audio Dependencies**: Virtual audio setup required for CI; configuration complexity exists.

@@ -2,11 +2,9 @@ use std::collections::VecDeque;
 use std::time::{Duration, Instant};
 
 use crate::audio::AudioCommand;
+use crate::domain::ports::{AudioBus, Clock};
 
-pub trait Clock: Clone {
-    fn now(&self) -> Duration;
-}
-
+/// Infrastructure implementation of Clock trait using system time.
 #[derive(Clone)]
 pub struct SystemClock {
     start: Instant,
@@ -32,14 +30,7 @@ impl Clock for SystemClock {
     }
 }
 
-pub trait AudioBus: Clone {
-    fn play_metronome_beep(&self);
-    fn play_pad(&self, key: char);
-    fn play_scheduled(&self, key: char);
-    fn pause_all(&self) {}
-    fn resume_all(&self) {}
-}
-
+/// Infrastructure implementation of AudioBus trait using channel sender.
 #[derive(Clone)]
 pub struct SenderAudioBus {
     tx: std::sync::mpsc::Sender<AudioCommand>,
