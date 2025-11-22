@@ -17,4 +17,3 @@ pub trait AudioBus: Clone {
     fn pause_all(&self) {}
     fn resume_all(&self) {}
 }
-
