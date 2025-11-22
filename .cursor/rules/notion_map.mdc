@@ -7,7 +7,7 @@ alwaysApply: false
     <page>
         <page_id>2634150965e480a69230ccde9b706a4e</page_id>
         <page_title>alpha: TermiGroove TUI Music App</page_title>
-        <page_summrize>Root hub that organizes the workspace: links to Overview, Epics, User Stories, Tasks, and Prompts.</page_summrize>
+        <page_summrize>Root hub that organizes the workspace: links to Overview, Intents, Units, Bolts, and Prompts. Uses AI-DLC (AI-Driven Development Lifecycle) structure.</page_summrize>
     </page>
     <page>
         <page_id>2634150965e480438b15f73b40bf0574</page_id>
@@ -15,19 +15,19 @@ alwaysApply: false
         <page_summrize>Vision, problem statement, expected outcomes, target users (20s in Japan), key results, and strategy to deliver a retro-futuristic TUI sampler for real-time co-creation.</page_summrize>
     </page>
     <page>
-        <page_id>26e4150965e480b891b1e383410557f1</page_id>
-        <page_title>Epics</page_title>
-        <page_summrize>Container page for the Epics database tracking large initiatives. Includes entries like the MVP-1 epic for loading and playback.</page_summrize>
+        <page_id>21685b0d6de44882af233b242a3348dd</page_id>
+        <page_title>Intents</page_title>
+        <page_summrize>AI-DLC Intents database: High-level business goals that replace Epics. Tracks Intent name, Status, Phase (Inception/Construction/Operations), Business Goal, and Owner. Intents decompose into Units.</page_summrize>
     </page>
     <page>
-        <page_id>26f4150965e4806daf22c835c7311825</page_id>
-        <page_title>User Stories</page_title>
-        <page_summrize>Container page for the User Stories database; stories connect to Epics and define acceptance criteria and performance constraints.</page_summrize>
+        <page_id>4949ed4572874ce1946cd7ad1469ffdb</page_id>
+        <page_title>Units</page_title>
+        <page_summrize>AI-DLC Units database: Self-contained work elements decomposed from Intents (replaces User Stories). Tracks Unit name, Status, Phase, Intent relation, Description, Owner, and related Bolts.</page_summrize>
     </page>
     <page>
-        <page_id>26f4150965e480039caeceeaf6f6d64c</page_id>
-        <page_title>Tasks</page_title>
-        <page_summrize>Container page for the Tasks database holding execution-level work; tasks link to stories/epics and track status, due dates, and PRs.</page_summrize>
+        <page_id>c94ab23e7a2c47bc82962bbb3f7b956a</page_id>
+        <page_title>Bolts</page_title>
+        <page_summrize>AI-DLC Bolts database: Ultra-fast iteration cycles (hours/days) that replace Tasks. Tracks Bolt name, Status, Phase, Unit relation, Duration, Start/End dates, Owner, and Deliverables.</page_summrize>
     </page>
     <page>
         <page_id>26f4150965e480769fa0ebaee3189200</page_id>
