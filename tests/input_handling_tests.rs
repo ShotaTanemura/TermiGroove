@@ -4,9 +4,9 @@ use std::time::Duration;
 
 use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 use termigroove::app_state::{AppState, FocusPane, Mode, PopupFocus, SampleSlot};
-use termigroove::audio::AudioCommand;
+use termigroove::audio::{AudioCommand, SenderAudioBus, SystemClock};
 use termigroove::input::handle_event;
-use termigroove::state::loop_engine::{LoopEngine, LoopState, SenderAudioBus, SystemClock};
+use termigroove::state::loop_engine::{LoopEngine, LoopState};
 
 #[test]
 fn arrow_focuses_summary_box_and_enter_opens_popup() {

@@ -1,68 +1,7 @@
 use std::collections::VecDeque;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
-use crate::audio::AudioCommand;
 use crate::domain::ports::{AudioBus, Clock};
-
-/// Infrastructure implementation of Clock trait using system time.
-#[derive(Clone)]
-pub struct SystemClock {
-    start: Instant,
-}
-
-impl SystemClock {
-    pub fn new() -> Self {
-        Self {
-            start: Instant::now(),
-        }
-    }
-}
-
-impl Default for SystemClock {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Clock for SystemClock {
-    fn now(&self) -> Duration {
-        self.start.elapsed()
-    }
-}
-
-/// Infrastructure implementation of AudioBus trait using channel sender.
-#[derive(Clone)]
-pub struct SenderAudioBus {
-    tx: std::sync::mpsc::Sender<AudioCommand>,
-}
-
-impl SenderAudioBus {
-    pub fn new(tx: std::sync::mpsc::Sender<AudioCommand>) -> Self {
-        Self { tx }
-    }
-}
-
-impl AudioBus for SenderAudioBus {
-    fn play_metronome_beep(&self) {
-        let _ = self.tx.send(AudioCommand::PlayMetronome);
-    }
-
-    fn play_pad(&self, key: char) {
-        let _ = self.tx.send(AudioCommand::Play { key });
-    }
-
-    fn play_scheduled(&self, key: char) {
-        let _ = self.tx.send(AudioCommand::PlayLoop { key });
-    }
-
-    fn pause_all(&self) {
-        let _ = self.tx.send(AudioCommand::PauseAll);
-    }
-
-    fn resume_all(&self) {
-        let _ = self.tx.send(AudioCommand::ResumeAll);
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LoopState {

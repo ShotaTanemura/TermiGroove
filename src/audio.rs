@@ -7,6 +7,9 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::mpsc::{self, Sender};
 use std::thread;
+use std::time::{Duration, Instant};
+
+use crate::domain::ports::{AudioBus, Clock};
 
 #[derive(Debug, Clone)]
 pub enum AudioCommand {
@@ -145,6 +148,66 @@ pub fn spawn_audio_thread() -> Sender<AudioCommand> {
         eprintln!("[audio] receiver closed; audio thread exiting");
     });
     tx
+}
+
+/// Infrastructure implementation of Clock trait using system time.
+#[derive(Clone)]
+pub struct SystemClock {
+    start: Instant,
+}
+
+impl SystemClock {
+    pub fn new() -> Self {
+        Self {
+            start: Instant::now(),
+        }
+    }
+}
+
+impl Default for SystemClock {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Clock for SystemClock {
+    fn now(&self) -> Duration {
+        self.start.elapsed()
+    }
+}
+
+/// Infrastructure implementation of AudioBus trait using channel sender.
+#[derive(Clone)]
+pub struct SenderAudioBus {
+    tx: std::sync::mpsc::Sender<AudioCommand>,
+}
+
+impl SenderAudioBus {
+    pub fn new(tx: std::sync::mpsc::Sender<AudioCommand>) -> Self {
+        Self { tx }
+    }
+}
+
+impl AudioBus for SenderAudioBus {
+    fn play_metronome_beep(&self) {
+        let _ = self.tx.send(AudioCommand::PlayMetronome);
+    }
+
+    fn play_pad(&self, key: char) {
+        let _ = self.tx.send(AudioCommand::Play { key });
+    }
+
+    fn play_scheduled(&self, key: char) {
+        let _ = self.tx.send(AudioCommand::PlayLoop { key });
+    }
+
+    fn pause_all(&self) {
+        let _ = self.tx.send(AudioCommand::PauseAll);
+    }
+
+    fn resume_all(&self) {
+        let _ = self.tx.send(AudioCommand::ResumeAll);
+    }
 }
 
 #[cfg(test)]
