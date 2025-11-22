@@ -1,4 +1,4 @@
-use crate::audio::{AudioCommand, spawn_audio_thread, SenderAudioBus, SystemClock};
+use crate::audio::{AudioCommand, SenderAudioBus, SystemClock, spawn_audio_thread};
 use crate::selection::SelectionModel;
 use crate::state::loop_engine::{LoopEngine, LoopState};
 use ratatui::widgets::{Block, BorderType, Borders};
