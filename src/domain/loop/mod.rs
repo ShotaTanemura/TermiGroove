@@ -12,6 +12,7 @@ use std::collections::VecDeque;
 use std::time::Duration;
 
 use crate::domain::ports::{AudioBus, Clock};
+use crate::domain::timing::{beat_interval_ms, loop_length_from, normalize_offset};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LoopState {
@@ -353,26 +354,4 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
             LoopState::Idle => {}
         }
     }
-}
-
-fn loop_length_from(bpm: u16, bars: u16) -> Duration {
-    let beats_per_bar = 4.0;
-    let beat_seconds = 60.0 / bpm as f64;
-    Duration::from_secs_f64(beat_seconds * beats_per_bar * bars as f64)
-}
-
-fn beat_interval_ms(bpm: u16) -> Duration {
-    Duration::from_secs_f64(60.0 / bpm as f64)
-}
-
-fn normalize_offset(elapsed: Duration, loop_length: Duration) -> Duration {
-    if loop_length.is_zero() {
-        return Duration::ZERO;
-    }
-    let loop_nanos = loop_length.as_nanos();
-    if loop_nanos == 0 {
-        return Duration::ZERO;
-    }
-    let remainder = elapsed.as_nanos() % loop_nanos;
-    Duration::from_nanos(remainder as u64)
 }
