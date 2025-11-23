@@ -4,8 +4,8 @@ use std::time::{Duration, Instant};
 
 use termigroove::app_state::{AppState, Mode, SampleSlot};
 use termigroove::audio::{AudioCommand, SenderAudioBus, SystemClock};
-use termigroove::input;
 use termigroove::domain::r#loop::{LoopEngine, LoopState};
+use termigroove::input;
 
 fn key_event(code: ratatui::crossterm::event::KeyCode) -> ratatui::crossterm::event::Event {
     ratatui::crossterm::event::Event::Key(ratatui::crossterm::event::KeyEvent::from(code))

@@ -89,4 +89,3 @@ pub fn normalize_offset(elapsed: Duration, loop_length: Duration) -> Duration {
     let remainder = elapsed.as_nanos() % loop_nanos;
     Duration::from_nanos(remainder as u64)
 }
-

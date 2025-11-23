@@ -23,13 +23,13 @@ Terminal-based music workstation and live looping instrument built as a cross-pl
 ### Application Architecture
 Modular monolith following Domain-Driven Design (DDD) and Ports & Adapters (Hexagonal Architecture) patterns:
 
-- **Domain Layer** (`src/domain/`): Defines port traits (interfaces) that domain logic requires. Contains no implementations, only trait definitions (e.g., `Clock`, `AudioBus`).
-- **State Layer** (`src/state/`): Contains domain logic implementations (e.g., `LoopEngine`) that depend on domain ports via trait bounds.
+- **Domain Layer** (`src/domain/`): Contains domain business logic (e.g., `LoopEngine` in `domain/loop/`) and port trait definitions (interfaces). Domain logic depends on port traits via trait bounds. Includes pure utility functions (`timing.rs`) and domain concepts (`tempo.rs`, `pads.rs`).
+- **State Layer**: Application state management via `AppState` (located in `src/app_state.rs`). The `src/state/` directory currently contains only test placeholders.
 - **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
 
 Dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
 
-**Dependency Rule**: Domain layer has no dependencies on infrastructure or state layers. Infrastructure and state layers depend on domain layer (implement/use port traits).
+**Dependency Rule**: Domain layer has no dependencies on infrastructure or state layers. Domain layer only imports from standard library (`std::`) and its own modules (`crate::domain::*`). Infrastructure and state layers depend on domain layer (implement/use port traits). Domain independence is validated through compilation checks and manual review.
 
 ### Data Storage (if applicable)
 - **Primary storage**: In-memory structures; audio files read from local filesystem on demand

@@ -5,8 +5,13 @@
 ```
 TermiGroove/
 ├── src/                      # Rust source (domain, state, audio, UI, input, selection modules)
-│   ├── domain/               # Domain layer: core business logic interfaces (ports)
-│   │   └── ports.rs          # Port trait definitions (Clock, AudioBus, etc.)
+│   ├── domain/               # Domain layer: core business logic and port interfaces
+│   │   ├── loop/             # Loop domain logic (LoopEngine, LoopState, etc.)
+│   │   │   └── mod.rs        # Loop recording and playback domain logic
+│   │   ├── ports.rs          # Port trait definitions (Clock, AudioBus)
+│   │   ├── timing.rs         # Pure timing utility functions
+│   │   ├── tempo.rs          # Tempo/BPM domain logic
+│   │   └── pads.rs           # Pad domain logic
 │   ├── app_state.rs          # Global application state & focus models
 │   ├── audio.rs              # Audio engine commands, thread management, CPAL integration (infrastructure/adapter)
 │   ├── input.rs              # Keyboard and event handling, focus routing
@@ -91,15 +96,17 @@ TermiGroove/
 ## Module Boundaries
 
 ### Layer Architecture
-- **Domain Layer** (`src/domain/`): Defines port traits (interfaces) that domain logic requires. Contains no implementations, only trait definitions.
-- **State Layer** (`src/state/`): Contains domain logic implementations (e.g., `LoopEngine`) that depend on domain ports via trait bounds.
+- **Domain Layer** (`src/domain/`): Contains domain business logic and port trait definitions (interfaces). Domain logic (e.g., `LoopEngine` in `domain/loop/`) depends on port traits via trait bounds. Pure utility functions (e.g., `timing.rs`) are stateless and deterministic.
+- **State Layer**: Application state management is handled by `AppState` (located in `src/app_state.rs`). The `src/state/` directory currently contains only test placeholders or supporting models.
 - **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
 
 ### Dependency Rules
 - Domain layer has no dependencies on infrastructure or state layers.
-- State layer depends on domain layer (imports port traits).
+- State layer depends on domain layer (imports port traits and domain logic).
 - Infrastructure layer depends on domain layer (implements port traits).
 - Domain layer does not import from infrastructure layer.
+- Domain layer only imports from standard library (`std::`) and its own modules (`crate::domain::*`).
+- **Validation**: Domain independence is maintained through manual review and compilation checks. No forbidden imports (`crate::audio`, `crate::state`, `crate::app_state`, `crate::input`, `crate::ui`, `crate::selection`) are allowed in domain layer.
 
 ### Module Interactions
 - `AppState` is the central source of truth; other modules depend on it via public APIs.
