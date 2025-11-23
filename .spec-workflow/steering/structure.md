@@ -5,8 +5,13 @@
 ```
 TermiGroove/
 ├── src/                      # Rust source (domain, state, audio, UI, input, selection modules)
-│   ├── domain/               # Domain layer: core business logic interfaces (ports)
-│   │   └── ports.rs          # Port trait definitions (Clock, AudioBus, etc.)
+│   ├── domain/               # Domain layer: core business logic and port interfaces
+│   │   ├── loop/             # Loop domain logic (LoopEngine, LoopState, etc.)
+│   │   │   └── mod.rs        # Loop recording and playback domain logic
+│   │   ├── ports.rs          # Port trait definitions (Clock, AudioBus)
+│   │   ├── timing.rs         # Pure timing utility functions
+│   │   ├── tempo.rs          # Tempo/BPM domain logic
+│   │   └── pads.rs           # Pad domain logic
 │   ├── app_state.rs          # Global application state & focus models
 │   ├── audio.rs              # Audio engine commands, thread management, CPAL integration (infrastructure/adapter)
 │   ├── input.rs              # Keyboard and event handling, focus routing
