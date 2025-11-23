@@ -96,8 +96,8 @@ TermiGroove/
 ## Module Boundaries
 
 ### Layer Architecture
-- **Domain Layer** (`src/domain/`): Defines port traits (interfaces) that domain logic requires. Contains no implementations, only trait definitions.
-- **State Layer** (`src/state/`): Contains domain logic implementations (e.g., `LoopEngine`) that depend on domain ports via trait bounds.
+- **Domain Layer** (`src/domain/`): Contains domain business logic and port trait definitions (interfaces). Domain logic (e.g., `LoopEngine` in `domain/loop/`) depends on port traits via trait bounds. Pure utility functions (e.g., `timing.rs`) are stateless and deterministic.
+- **State Layer** (`src/state/`): Supporting state models and application state management (`AppState`).
 - **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
 
 ### Dependency Rules
