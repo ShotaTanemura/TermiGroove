@@ -24,7 +24,7 @@ Terminal-based music workstation and live looping instrument built as a cross-pl
 Modular monolith following Domain-Driven Design (DDD) and Ports & Adapters (Hexagonal Architecture) patterns:
 
 - **Domain Layer** (`src/domain/`): Contains domain business logic (e.g., `LoopEngine` in `domain/loop/`) and port trait definitions (interfaces). Domain logic depends on port traits via trait bounds. Includes pure utility functions (`timing.rs`) and domain concepts (`tempo.rs`, `pads.rs`).
-- **State Layer** (`src/state/`): Supporting state models and application state management (`AppState`).
+- **State Layer**: Application state management via `AppState` (located in `src/app_state.rs`). The `src/state/` directory currently contains only test placeholders.
 - **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
 
 Dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
