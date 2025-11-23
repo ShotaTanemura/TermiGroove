@@ -3,7 +3,7 @@ use std::rc::Rc;
 use std::time::Duration;
 
 use termigroove::domain::ports::{AudioBus, Clock};
-use termigroove::state::loop_engine::{LoopEngine, LoopState};
+use termigroove::domain::r#loop::{LoopEngine, LoopState};
 
 #[derive(Clone)]
 struct FakeClock {
