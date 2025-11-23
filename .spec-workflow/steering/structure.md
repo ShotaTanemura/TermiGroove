@@ -97,7 +97,7 @@ TermiGroove/
 
 ### Layer Architecture
 - **Domain Layer** (`src/domain/`): Contains domain business logic and port trait definitions (interfaces). Domain logic (e.g., `LoopEngine` in `domain/loop/`) depends on port traits via trait bounds. Pure utility functions (e.g., `timing.rs`) are stateless and deterministic.
-- **State Layer** (`src/state/`): Supporting state models and application state management (`AppState`).
+- **State Layer**: Application state management is handled by `AppState` (located in `src/app_state.rs`). The `src/state/` directory currently contains only test placeholders or supporting models.
 - **Infrastructure Layer** (`src/audio.rs`, etc.): Provides concrete implementations of domain ports (adapters). Implements traits defined in domain layer.
 
 ### Dependency Rules
