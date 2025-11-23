@@ -6,7 +6,7 @@ use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 use termigroove::app_state::{AppState, FocusPane, Mode, PopupFocus, SampleSlot};
 use termigroove::audio::{AudioCommand, SenderAudioBus, SystemClock};
 use termigroove::input::handle_event;
-use termigroove::state::loop_engine::{LoopEngine, LoopState};
+use termigroove::domain::r#loop::{LoopEngine, LoopState};
 
 #[test]
 fn arrow_focuses_summary_box_and_enter_opens_popup() {

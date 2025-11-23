@@ -7,7 +7,7 @@ use termigroove::app_state::{AppState, Mode, SampleSlot};
 use termigroove::audio::{AudioCommand, SenderAudioBus};
 use termigroove::input;
 use termigroove::domain::ports::Clock;
-use termigroove::state::loop_engine::{LoopEngine, LoopState};
+use termigroove::domain::r#loop::{LoopEngine, LoopState};
 
 #[derive(Clone)]
 struct TestClock {
