@@ -98,4 +98,3 @@ fn test_normalize_offset_deterministic() {
     let result2 = normalize_offset(elapsed, loop_length);
     assert_eq!(result1, result2);
 }
-

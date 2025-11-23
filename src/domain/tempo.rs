@@ -18,4 +18,3 @@ pub const BPM_MAX: u16 = 300;
 pub fn clamp_bpm(v: u16) -> u16 {
     v.clamp(BPM_MIN, BPM_MAX)
 }
-

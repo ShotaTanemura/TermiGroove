@@ -12,4 +12,3 @@
 pub fn default_pad_keys() -> &'static [char] {
     &['q', 'w', 'e', 'r', 't', 'y', 'u', 'i']
 }
-
