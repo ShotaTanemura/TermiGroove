@@ -13,7 +13,7 @@ use tui_big_text::{BigText, PixelSize};
 use tui_popup::{Popup, SizedWidgetRef};
 
 use crate::app_state::{AppState, FocusPane, Mode, PopupFocus};
-use crate::state::loop_engine::LoopState;
+use crate::domain::r#loop::LoopState;
 
 const HEADER_TITLE: &str = "WELCOME TO TERMIGROOVE";
 const HEADER_SUBTITLE: &str = "Load your samples...";
