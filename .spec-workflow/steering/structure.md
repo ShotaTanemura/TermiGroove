@@ -102,9 +102,11 @@ TermiGroove/
 
 ### Dependency Rules
 - Domain layer has no dependencies on infrastructure or state layers.
-- State layer depends on domain layer (imports port traits).
+- State layer depends on domain layer (imports port traits and domain logic).
 - Infrastructure layer depends on domain layer (implements port traits).
 - Domain layer does not import from infrastructure layer.
+- Domain layer only imports from standard library (`std::`) and its own modules (`crate::domain::*`).
+- **Validation**: Domain independence is maintained through manual review and compilation checks. No forbidden imports (`crate::audio`, `crate::state`, `crate::app_state`, `crate::input`, `crate::ui`, `crate::selection`) are allowed in domain layer.
 
 ### Module Interactions
 - `AppState` is the central source of truth; other modules depend on it via public APIs.

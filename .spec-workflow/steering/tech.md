@@ -29,7 +29,7 @@ Modular monolith following Domain-Driven Design (DDD) and Ports & Adapters (Hexa
 
 Dedicated modules for state management (`app_state`), audio engine (`audio`), user input handling (`input`), selection/file models (`selection`), and rendering (`ui`). Follows an event-driven loop pulling terminal events, updating state, and re-rendering frames.
 
-**Dependency Rule**: Domain layer has no dependencies on infrastructure or state layers. Infrastructure and state layers depend on domain layer (implement/use port traits).
+**Dependency Rule**: Domain layer has no dependencies on infrastructure or state layers. Domain layer only imports from standard library (`std::`) and its own modules (`crate::domain::*`). Infrastructure and state layers depend on domain layer (implement/use port traits). Domain independence is validated through compilation checks and manual review.
 
 ### Data Storage (if applicable)
 - **Primary storage**: In-memory structures; audio files read from local filesystem on demand
