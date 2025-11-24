@@ -2,8 +2,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;
 
-use termigroove::domain::ports::{AudioBus, Clock};
 use termigroove::domain::r#loop::{LoopEngine, LoopState};
+use termigroove::domain::ports::{AudioBus, Clock};
 
 #[derive(Clone)]
 struct FakeClock {
