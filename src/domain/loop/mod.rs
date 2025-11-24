@@ -87,6 +87,12 @@ impl<A: AudioBus, C: Clock> LoopEngine<A, C> {
         self.tracks.len()
     }
 
+    /// Get the current time from the clock.
+    /// Useful for DTO conversion and external time queries.
+    pub fn now(&self) -> Duration {
+        self.clock.now()
+    }
+
     fn realign_track_positions(&mut self, saved_offset: Duration, loop_length: Duration) {
         for track in &mut self.tracks {
             let idx = track
