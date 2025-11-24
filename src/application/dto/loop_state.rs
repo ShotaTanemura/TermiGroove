@@ -5,4 +5,3 @@
 //!
 //! To be implemented in T2.3: LoopStateDto struct with conversion logic
 //! from domain LoopEngine/LoopState types.
-

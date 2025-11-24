@@ -7,4 +7,3 @@
 //! - View state (current mode, focus, etc.)
 //! - Rendering hints
 //! - UI-specific metadata
-
