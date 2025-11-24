@@ -1,4 +1,5 @@
 mod app_state;
+mod application;
 mod audio;
 mod domain;
 mod input;
