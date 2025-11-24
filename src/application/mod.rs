@@ -6,7 +6,7 @@
 //!
 //! Key responsibilities:
 //! - Define DTOs for data transfer between layers
-//! - Provide application services (to be implemented in future tasks)
+//! - Provide application services for orchestrating use cases
 //! - Coordinate domain logic execution
 //!
 //! Layer boundaries:
@@ -14,3 +14,7 @@
 //! - Does not depend on: Presentation layer (`crate::ui`), Infrastructure layer (`crate::audio`)
 
 pub mod dto;
+pub mod service;
+pub mod state;
+
+pub use state::{ApplicationState, PadsState, SampleSlot};
