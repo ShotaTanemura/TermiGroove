@@ -155,27 +155,27 @@ impl<A: AudioBus, C: Clock> From<&LoopEngine<A, C>> for LoopStateDto {
     }
 }
 
-impl Into<crate::domain::r#loop::LoopState> for LoopStateDto {
-    fn into(self) -> crate::domain::r#loop::LoopState {
-        match self.status {
+impl From<LoopStateDto> for crate::domain::r#loop::LoopState {
+    fn from(dto: LoopStateDto) -> Self {
+        match dto.status {
             LoopStatusDto::Idle => crate::domain::r#loop::LoopState::Idle,
             LoopStatusDto::Ready => crate::domain::r#loop::LoopState::Ready {
-                ticks_remaining: self.ticks_remaining.unwrap_or(0),
-                loop_length: self.loop_length,
+                ticks_remaining: dto.ticks_remaining.unwrap_or(0),
+                loop_length: dto.loop_length,
             },
             LoopStatusDto::Recording => crate::domain::r#loop::LoopState::Recording {
                 start_time: Duration::ZERO, // Cannot reconstruct exact start_time
-                loop_length: self.loop_length,
+                loop_length: dto.loop_length,
             },
             LoopStatusDto::Playing => crate::domain::r#loop::LoopState::Playing {
                 cycle_start: Duration::ZERO, // Cannot reconstruct exact cycle_start
-                loop_length: self.loop_length,
+                loop_length: dto.loop_length,
             },
             LoopStatusDto::Paused => crate::domain::r#loop::LoopState::Paused {
                 cycle_start: Duration::ZERO, // Cannot reconstruct exact cycle_start
-                loop_length: self.loop_length,
-                saved_offset: self.saved_offset.unwrap_or(Duration::ZERO),
-                was_recording: self.was_recording.unwrap_or(false),
+                loop_length: dto.loop_length,
+                saved_offset: dto.saved_offset.unwrap_or(Duration::ZERO),
+                was_recording: dto.was_recording.unwrap_or(false),
             },
         }
     }
