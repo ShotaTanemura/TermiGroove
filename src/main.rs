@@ -117,7 +117,8 @@ fn main() -> Result<()> {
         }
 
         // Update loop engine
-        app_state.update_loop();
+        let loop_effects = app_service.update_loop(&mut app_state);
+        apply_effects(&mut view_model, &audio_tx, loop_effects);
     }
 
     // Restore terminal
