@@ -87,12 +87,12 @@ fn handle_input_with_char_key_in_pads_mode_produces_audio_effect() {
     // If 'q' is mapped to a pad and loop is not recording, should produce audio effect
     if app_state.pads.key_to_slot.contains_key(&'q') {
         // Check if any effect is an audio command
-        let _has_audio_effect = effects
+        let has_audio_effect = effects
             .iter()
             .any(|e| matches!(e, Effect::AudioCommand(AudioCommand::Play { .. })));
         // The effect may or may not be produced depending on loop state
-        // This test verifies the method works without panicking
-        assert!(true); // Just verify it doesn't panic
+        // Assert that an audio effect is produced if the pad is mapped
+        assert!(has_audio_effect, "Expected an audio effect when pad is mapped to 'q'");
     }
 }
 
@@ -142,11 +142,10 @@ fn update_loop_produces_no_effects_initially() {
     let (mut app_state, _view_model, tx) = setup_test_state();
     let service = AppService::new(tx);
 
-    service.update_loop(&mut app_state);
+    let effects = service.update_loop(&mut app_state);
 
-    // Initially, update_loop should not produce effects (it doesn't return effects)
-    // This test verifies the method works without panicking
-    assert!(true);
+    // Initially, update_loop should not produce effects
+    assert_eq!(effects, Vec::new());
 }
 
 #[test]
@@ -213,7 +212,7 @@ fn handle_input_with_enter_in_browse_mode() {
 
     // Enter should attempt to enter pads mode
     // Effects may be empty or contain preload commands
-    assert!(true); // Just verify it doesn't panic
+    assert!(matches!(view_model.mode, termigroove::app_state::Mode::Pads));
 }
 
 #[test]
@@ -245,7 +244,6 @@ fn service_methods_are_idempotent() {
 fn handle_input_with_up_key_in_left_explorer_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
     view_model.focus = termigroove::app_state::FocusPane::LeftExplorer;
-    let initial_item = view_model.current_left_item.clone();
 
     let service = AppService::new(tx);
     let input_action = InputAction::KeyPressed {
@@ -284,7 +282,7 @@ fn handle_input_with_space_key_in_left_explorer_focus_selects_file() {
         .expect("handle input");
 
     // Space key should select the file and produce status message
-    assert!(app_state.selection.items.len() > initial_selection_count || app_state.selection.items.len() == initial_selection_count);
+    assert_eq!(app_state.selection.items.len(), initial_selection_count + 1);
     assert!(!effects.is_empty());
     assert!(effects.iter().any(|e| matches!(e, Effect::StatusMessage(_))));
 }
