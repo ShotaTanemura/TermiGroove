@@ -7,10 +7,47 @@
 //! This state is managed by the presentation layer and can be mutated by
 //! presentation components (e.g., effect handlers).
 
-use crate::app_state::{FocusPane, Mode, PopupFocus};
 use ratatui_explorer::FileExplorer;
 use std::path::PathBuf;
 use tui_input::Input as TextInput;
+
+/// Application mode - controls which screen is displayed.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Mode {
+    /// File browser mode for selecting WAV files
+    #[default]
+    Browse,
+    /// Pads mode for triggering samples
+    Pads,
+}
+
+/// Which pane has keyboard focus in Browse mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum FocusPane {
+    /// Left pane: file explorer
+    #[default]
+    LeftExplorer,
+    /// Right pane: selected files list
+    RightSelected,
+}
+
+/// Popup focus states for BPM/Bars configuration dialog.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PopupFocus {
+    /// No popup open
+    #[default]
+    None,
+    /// Summary box focus
+    SummaryBox,
+    /// BPM input field
+    PopupFieldBpm,
+    /// Bars input field
+    PopupFieldBars,
+    /// OK button
+    PopupOk,
+    /// Cancel button
+    PopupCancel,
+}
 
 /// Presentation view model containing UI-specific state.
 #[derive(Debug)]
@@ -150,4 +187,3 @@ impl ViewModel {
         };
     }
 }
-

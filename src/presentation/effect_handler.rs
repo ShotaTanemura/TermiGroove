@@ -37,4 +37,3 @@ pub fn apply_effects(
         }
     }
 }
-

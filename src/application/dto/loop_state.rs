@@ -45,40 +45,6 @@ pub struct LoopStateDto {
     pub track_count: usize,
 }
 
-impl LoopStateDto {
-    /// Returns a human-readable status label for UI display.
-    pub fn status_label(&self) -> &str {
-        match self.status {
-            LoopStatusDto::Idle => "idle",
-            LoopStatusDto::Ready => "ready",
-            LoopStatusDto::Recording => "recording",
-            LoopStatusDto::Playing => "playing",
-            LoopStatusDto::Paused => "PAUSED",
-        }
-    }
-
-    /// Returns a formatted display string for UI consumption.
-    ///
-    /// Includes track count information when relevant.
-    pub fn display_string(&self) -> String {
-        match self.status {
-            LoopStatusDto::Idle => "Loop idle".to_string(),
-            LoopStatusDto::Ready => "Loop ready".to_string(),
-            LoopStatusDto::Recording => "Loop recording".to_string(),
-            LoopStatusDto::Playing => format!(
-                "Loop playing ({} track{})",
-                self.track_count,
-                if self.track_count == 1 { "" } else { "s" }
-            ),
-            LoopStatusDto::Paused => format!(
-                "Loop paused ({} track{})",
-                self.track_count,
-                if self.track_count == 1 { "" } else { "s" }
-            ),
-        }
-    }
-}
-
 impl<A: AudioBus, C: Clock> From<&LoopEngine<A, C>> for LoopStateDto {
     fn from(engine: &LoopEngine<A, C>) -> Self {
         let state = engine.state();

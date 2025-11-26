@@ -60,24 +60,9 @@ impl ApplicationState {
         }
     }
 
-    /// Get mutable reference to loop engine.
-    pub fn loop_engine_mut(&mut self) -> &mut LoopEngine<SenderAudioBus, SystemClock> {
-        &mut self.loop_engine
-    }
-
-    /// Get immutable reference to loop engine.
-    pub fn loop_engine(&self) -> &LoopEngine<SenderAudioBus, SystemClock> {
-        &self.loop_engine
-    }
-
     /// Get current loop state.
     pub fn loop_state(&self) -> LoopState {
         self.loop_engine.state()
-    }
-
-    /// Get number of tracks in loop engine.
-    pub fn tracks_count(&self) -> usize {
-        self.loop_engine.tracks_count()
     }
 
     /// Update loop engine (call on each frame).
@@ -133,7 +118,6 @@ impl ApplicationState {
     /// Attempt to enter Pads mode. Validates selection and builds pad mapping.
     /// Returns effects (Preload commands) and error message if validation fails.
     pub fn enter_pads(&mut self) -> anyhow::Result<Vec<AudioCommand>> {
-
         if self.selection.items.is_empty() {
             anyhow::bail!("Select at least one file first")
         }

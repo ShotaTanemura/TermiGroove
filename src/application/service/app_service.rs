@@ -12,7 +12,9 @@ use crate::application::state::ApplicationState;
 use crate::audio::AudioCommand;
 use crate::domain::r#loop::LoopState;
 use crate::presentation::ViewModel;
-use ratatui::crossterm::event::{Event, KeyCode as CrosstermKeyCode, KeyEvent, KeyModifiers as CrosstermModifiers};
+use ratatui::crossterm::event::{
+    Event, KeyCode as CrosstermKeyCode, KeyEvent, KeyModifiers as CrosstermModifiers,
+};
 use std::sync::mpsc::Sender;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -100,10 +102,10 @@ impl AppService {
         effects: &mut Vec<Effect>,
     ) -> anyhow::Result<()> {
         match view_model.mode {
-            crate::app_state::Mode::Browse => {
+            crate::presentation::Mode::Browse => {
                 self.handle_browse_mode_key(app_state, view_model, key, effects)?;
             }
-            crate::app_state::Mode::Pads => {
+            crate::presentation::Mode::Pads => {
                 self.handle_pads_mode_key(app_state, view_model, key, modifiers, effects)?;
             }
         }
@@ -132,7 +134,7 @@ impl AppService {
                             effects.push(Effect::AudioCommand(cmd));
                         }
                         // Update mode in view model
-                        view_model.mode = crate::app_state::Mode::Pads;
+                        view_model.mode = crate::presentation::Mode::Pads;
                         effects.push(Effect::StatusMessage(
                             "[Pads] Press Esc to go back. Press Q/W/…/< to trigger.".to_string(),
                         ));
@@ -145,18 +147,16 @@ impl AppService {
             _ => {
                 // Route keys based on focused pane
                 match view_model.focus {
-                    crate::app_state::FocusPane::LeftExplorer => {
-                        match key {
-                            KeyCode::Char(' ') => {
-                                self.handle_file_selection(app_state, view_model, effects)?;
-                            }
-                            KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
-                                self.handle_file_explorer_navigation(view_model, key, effects)?;
-                            }
-                            _ => {}
+                    crate::presentation::FocusPane::LeftExplorer => match key {
+                        KeyCode::Char(' ') => {
+                            self.handle_file_selection(app_state, view_model, effects)?;
                         }
-                    }
-                    crate::app_state::FocusPane::RightSelected => {
+                        KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
+                            self.handle_file_explorer_navigation(view_model, key, effects)?;
+                        }
+                        _ => {}
+                    },
+                    crate::presentation::FocusPane::RightSelected => {
                         self.handle_selection_management(app_state, view_model, key, effects)?;
                     }
                 }
@@ -183,7 +183,7 @@ impl AppService {
         match key {
             KeyCode::Esc => {
                 app_state.cancel_loop();
-                view_model.mode = crate::app_state::Mode::Browse;
+                view_model.mode = crate::presentation::Mode::Browse;
                 effects.push(Effect::StatusMessage("Back to browse".to_string()));
             }
             KeyCode::Char(' ') if modifiers.control => {
@@ -200,7 +200,7 @@ impl AppService {
             KeyCode::Enter => {
                 if matches!(
                     view_model.popup_focus(),
-                    crate::app_state::PopupFocus::SummaryBox
+                    crate::presentation::PopupFocus::SummaryBox
                 ) {
                     view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
                 }
@@ -241,9 +241,9 @@ impl AppService {
         app_state: &mut ApplicationState,
         view_model: &mut ViewModel,
         key: KeyCode,
-        _effects: &mut Vec<Effect>,
+        _effects: &mut [Effect],
     ) -> anyhow::Result<()> {
-        use crate::app_state::PopupFocus;
+        use crate::presentation::PopupFocus;
         use ratatui::crossterm::event::Event;
         use tui_input::InputRequest;
         use tui_input::backend::crossterm::to_input_request;
@@ -293,25 +293,23 @@ impl AppService {
                 // Handle all other keys (including Char, Backspace, Delete, etc.) for text input
                 // Convert KeyCode to KeyEvent for TextInput handling
                 // This is a temporary workaround until we refactor TextInput to use InputAction
-                if let Ok(event) = self.keycode_to_event(key) {
-                    if let Event::Key(crossterm_key) = event {
-                        if let Some(req) = to_input_request(&Event::Key(crossterm_key)) {
-                            // Enforce digits-only input for InsertChar requests
-                            let should_apply = match req {
-                                InputRequest::InsertChar(ch) => ch.is_ascii_digit(),
-                                _ => true,
-                            };
-                            if should_apply {
-                                match view_model.popup_focus() {
-                                    PopupFocus::PopupFieldBpm => {
-                                        let _ = view_model.draft_bpm_mut().handle(req);
-                                    }
-                                    PopupFocus::PopupFieldBars => {
-                                        let _ = view_model.draft_bars_mut().handle(req);
-                                    }
-                                    _ => {}
-                                }
+                if let Ok(Event::Key(crossterm_key)) = self.keycode_to_event(key)
+                    && let Some(req) = to_input_request(&Event::Key(crossterm_key))
+                {
+                    // Enforce digits-only input for InsertChar requests
+                    let should_apply = match req {
+                        InputRequest::InsertChar(ch) => ch.is_ascii_digit(),
+                        _ => true,
+                    };
+                    if should_apply {
+                        match view_model.popup_focus() {
+                            PopupFocus::PopupFieldBpm => {
+                                let _ = view_model.draft_bpm_mut().handle(req);
                             }
+                            PopupFocus::PopupFieldBars => {
+                                let _ = view_model.draft_bars_mut().handle(req);
+                            }
+                            _ => {}
                         }
                     }
                 }
@@ -350,7 +348,7 @@ impl AppService {
         &self,
         view_model: &mut ViewModel,
         key: KeyCode,
-        _effects: &mut Vec<Effect>,
+        _effects: &mut [Effect],
     ) -> anyhow::Result<()> {
         // Convert KeyCode to Event::Key for FileExplorer
         let event = self.keycode_to_event(key)?;
@@ -373,7 +371,9 @@ impl AppService {
         effects: &mut Vec<Effect>,
     ) -> anyhow::Result<()> {
         if view_model.current_left_is_dir {
-            effects.push(Effect::StatusMessage("Only files can be selected".to_string()));
+            effects.push(Effect::StatusMessage(
+                "Only files can be selected".to_string(),
+            ));
         } else if let Some(path) = view_model.current_left_item.clone() {
             app_state.selection.add_file(path);
             effects.push(Effect::StatusMessage(app_state.selection.status.clone()));

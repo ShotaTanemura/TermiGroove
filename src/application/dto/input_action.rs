@@ -42,18 +42,6 @@ pub struct KeyModifiers {
     pub alt: bool,
 }
 
-impl KeyModifiers {
-    /// Check if any modifier is active
-    pub fn is_empty(&self) -> bool {
-        !self.control && !self.shift && !self.alt
-    }
-
-    /// Check if control modifier is active
-    pub fn contains_control(&self) -> bool {
-        self.control
-    }
-}
-
 /// Input action DTO representing user input events.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputAction {
