@@ -1,15 +1,13 @@
-mod app_state;
 mod application;
 mod audio;
 mod domain;
-mod input;
 mod presentation;
 mod selection;
 mod state;
 mod ui;
 
 use anyhow::Result;
-use app_state::Mode;
+use presentation::Mode;
 use application::dto::input_action::InputAction;
 use application::service::app_service::AppService;
 use application::state::ApplicationState;

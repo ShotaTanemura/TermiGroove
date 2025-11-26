@@ -100,10 +100,10 @@ impl AppService {
         effects: &mut Vec<Effect>,
     ) -> anyhow::Result<()> {
         match view_model.mode {
-            crate::app_state::Mode::Browse => {
+            crate::presentation::Mode::Browse => {
                 self.handle_browse_mode_key(app_state, view_model, key, effects)?;
             }
-            crate::app_state::Mode::Pads => {
+            crate::presentation::Mode::Pads => {
                 self.handle_pads_mode_key(app_state, view_model, key, modifiers, effects)?;
             }
         }
@@ -132,7 +132,7 @@ impl AppService {
                             effects.push(Effect::AudioCommand(cmd));
                         }
                         // Update mode in view model
-                        view_model.mode = crate::app_state::Mode::Pads;
+                        view_model.mode = crate::presentation::Mode::Pads;
                         effects.push(Effect::StatusMessage(
                             "[Pads] Press Esc to go back. Press Q/W/…/< to trigger.".to_string(),
                         ));
@@ -145,7 +145,7 @@ impl AppService {
             _ => {
                 // Route keys based on focused pane
                 match view_model.focus {
-                    crate::app_state::FocusPane::LeftExplorer => {
+                    crate::presentation::FocusPane::LeftExplorer => {
                         match key {
                             KeyCode::Char(' ') => {
                                 self.handle_file_selection(app_state, view_model, effects)?;
@@ -156,7 +156,7 @@ impl AppService {
                             _ => {}
                         }
                     }
-                    crate::app_state::FocusPane::RightSelected => {
+                    crate::presentation::FocusPane::RightSelected => {
                         self.handle_selection_management(app_state, view_model, key, effects)?;
                     }
                 }
@@ -183,7 +183,7 @@ impl AppService {
         match key {
             KeyCode::Esc => {
                 app_state.cancel_loop();
-                view_model.mode = crate::app_state::Mode::Browse;
+                view_model.mode = crate::presentation::Mode::Browse;
                 effects.push(Effect::StatusMessage("Back to browse".to_string()));
             }
             KeyCode::Char(' ') if modifiers.control => {
@@ -200,7 +200,7 @@ impl AppService {
             KeyCode::Enter => {
                 if matches!(
                     view_model.popup_focus(),
-                    crate::app_state::PopupFocus::SummaryBox
+                    crate::presentation::PopupFocus::SummaryBox
                 ) {
                     view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
                 }
@@ -243,7 +243,7 @@ impl AppService {
         key: KeyCode,
         _effects: &mut Vec<Effect>,
     ) -> anyhow::Result<()> {
-        use crate::app_state::PopupFocus;
+        use crate::presentation::PopupFocus;
         use ratatui::crossterm::event::Event;
         use tui_input::InputRequest;
         use tui_input::backend::crossterm::to_input_request;

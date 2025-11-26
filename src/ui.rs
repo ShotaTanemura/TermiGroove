@@ -12,7 +12,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tui_big_text::{BigText, PixelSize};
 use tui_popup::{Popup, SizedWidgetRef};
 
-use crate::app_state::{FocusPane, Mode, PopupFocus};
+use crate::presentation::{FocusPane, Mode, PopupFocus};
 use crate::application::state::ApplicationState;
 use crate::domain::r#loop::LoopState;
 use crate::presentation::ViewModel;
