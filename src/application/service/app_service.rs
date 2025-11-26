@@ -12,7 +12,9 @@ use crate::application::state::ApplicationState;
 use crate::audio::AudioCommand;
 use crate::domain::r#loop::LoopState;
 use crate::presentation::ViewModel;
-use ratatui::crossterm::event::{Event, KeyCode as CrosstermKeyCode, KeyEvent, KeyModifiers as CrosstermModifiers};
+use ratatui::crossterm::event::{
+    Event, KeyCode as CrosstermKeyCode, KeyEvent, KeyModifiers as CrosstermModifiers,
+};
 use std::sync::mpsc::Sender;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -145,17 +147,15 @@ impl AppService {
             _ => {
                 // Route keys based on focused pane
                 match view_model.focus {
-                    crate::presentation::FocusPane::LeftExplorer => {
-                        match key {
-                            KeyCode::Char(' ') => {
-                                self.handle_file_selection(app_state, view_model, effects)?;
-                            }
-                            KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
-                                self.handle_file_explorer_navigation(view_model, key, effects)?;
-                            }
-                            _ => {}
+                    crate::presentation::FocusPane::LeftExplorer => match key {
+                        KeyCode::Char(' ') => {
+                            self.handle_file_selection(app_state, view_model, effects)?;
                         }
-                    }
+                        KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
+                            self.handle_file_explorer_navigation(view_model, key, effects)?;
+                        }
+                        _ => {}
+                    },
                     crate::presentation::FocusPane::RightSelected => {
                         self.handle_selection_management(app_state, view_model, key, effects)?;
                     }
@@ -373,7 +373,9 @@ impl AppService {
         effects: &mut Vec<Effect>,
     ) -> anyhow::Result<()> {
         if view_model.current_left_is_dir {
-            effects.push(Effect::StatusMessage("Only files can be selected".to_string()));
+            effects.push(Effect::StatusMessage(
+                "Only files can be selected".to_string(),
+            ));
         } else if let Some(path) = view_model.current_left_item.clone() {
             app_state.selection.add_file(path);
             effects.push(Effect::StatusMessage(app_state.selection.status.clone()));

@@ -118,7 +118,6 @@ impl ApplicationState {
     /// Attempt to enter Pads mode. Validates selection and builds pad mapping.
     /// Returns effects (Preload commands) and error message if validation fails.
     pub fn enter_pads(&mut self) -> anyhow::Result<Vec<AudioCommand>> {
-
         if self.selection.items.is_empty() {
             anyhow::bail!("Select at least one file first")
         }

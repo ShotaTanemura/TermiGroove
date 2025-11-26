@@ -7,23 +7,23 @@ mod state;
 mod ui;
 
 use anyhow::Result;
-use presentation::Mode;
 use application::dto::input_action::InputAction;
 use application::service::app_service::AppService;
 use application::state::ApplicationState;
-use audio::{spawn_audio_thread, SenderAudioBus, SystemClock};
+use audio::{SenderAudioBus, SystemClock, spawn_audio_thread};
 use domain::r#loop::LoopEngine;
-use presentation::effect_handler::apply_effects;
+use presentation::Mode;
 use presentation::ViewModel;
+use presentation::effect_handler::apply_effects;
 use ratatui::crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
+use ratatui::widgets::{Block, BorderType, Borders};
 use ratatui::{Terminal, backend::CrosstermBackend};
 use ratatui_explorer::FileExplorer;
 use ratatui_explorer::Theme as ExplorerTheme;
-use ratatui::widgets::{Block, BorderType, Borders};
 use std::io;
 
 fn setup_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>> {
@@ -64,7 +64,10 @@ fn main() -> Result<()> {
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded),
         )
-        .with_title_bottom(|_| "  Enter: to pads / Space: select / Tab: switch pane / d/Delete: remove / q: quit  ".into());
+        .with_title_bottom(|_| {
+            "  Enter: to pads / Space: select / Tab: switch pane / d/Delete: remove / q: quit  "
+                .into()
+        });
     let file_explorer = FileExplorer::with_theme(theme)?;
     let mut view_model = ViewModel::new(file_explorer);
 
@@ -100,14 +103,18 @@ fn main() -> Result<()> {
                 ev @ Event::Resize(_, _) => {
                     // Convert to InputAction
                     let input_action = InputAction::from(ev);
-                    if let Ok(effects) = app_service.handle_input(&mut app_state, &mut view_model, input_action) {
+                    if let Ok(effects) =
+                        app_service.handle_input(&mut app_state, &mut view_model, input_action)
+                    {
                         apply_effects(&mut view_model, &audio_tx, effects);
                     }
                 }
                 other => {
                     // Convert to InputAction
                     let input_action = InputAction::from(other);
-                    if let Ok(effects) = app_service.handle_input(&mut app_state, &mut view_model, input_action) {
+                    if let Ok(effects) =
+                        app_service.handle_input(&mut app_state, &mut view_model, input_action)
+                    {
                         apply_effects(&mut view_model, &audio_tx, effects);
                     }
                 }

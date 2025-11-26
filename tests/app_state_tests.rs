@@ -1,14 +1,14 @@
 use std::path::PathBuf;
 use std::sync::mpsc;
 
-use termigroove::presentation::PopupFocus;
+use ratatui::widgets::{Block, BorderType, Borders};
+use ratatui_explorer::{FileExplorer, Theme as ExplorerTheme};
 use termigroove::application::state::ApplicationState;
 use termigroove::audio::{SenderAudioBus, SystemClock};
 use termigroove::domain::r#loop::LoopEngine;
+use termigroove::presentation::PopupFocus;
 use termigroove::presentation::ViewModel;
 use termigroove::selection::SelectionModel;
-use ratatui_explorer::{FileExplorer, Theme as ExplorerTheme};
-use ratatui::widgets::{Block, BorderType, Borders};
 use tui_input::{Input as TextInput, InputRequest};
 
 #[test]
@@ -83,12 +83,11 @@ fn setup_test_state() -> (ApplicationState, ViewModel) {
     let bus = SenderAudioBus::new(tx);
     let loop_engine = LoopEngine::new(SystemClock::new(), bus);
     let app_state = ApplicationState::new(loop_engine);
-    let theme = ExplorerTheme::default()
-        .with_block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
-        );
+    let theme = ExplorerTheme::default().with_block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded),
+    );
     let file_explorer = FileExplorer::with_theme(theme).expect("create file explorer");
     let view_model = ViewModel::new(file_explorer);
     (app_state, view_model)

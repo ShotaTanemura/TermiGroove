@@ -28,4 +28,3 @@ impl From<AudioCommand> for Effect {
         Effect::AudioCommand(cmd)
     }
 }
-

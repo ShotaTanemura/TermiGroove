@@ -45,7 +45,6 @@ pub struct LoopStateDto {
     pub track_count: usize,
 }
 
-
 impl<A: AudioBus, C: Clock> From<&LoopEngine<A, C>> for LoopStateDto {
     fn from(engine: &LoopEngine<A, C>) -> Self {
         let state = engine.state();

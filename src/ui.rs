@@ -12,10 +12,10 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tui_big_text::{BigText, PixelSize};
 use tui_popup::{Popup, SizedWidgetRef};
 
-use crate::presentation::{FocusPane, Mode, PopupFocus};
 use crate::application::state::ApplicationState;
 use crate::domain::r#loop::LoopState;
 use crate::presentation::ViewModel;
+use crate::presentation::{FocusPane, Mode, PopupFocus};
 
 const HEADER_TITLE: &str = "WELCOME TO TERMIGROOVE";
 const HEADER_SUBTITLE: &str = "Load your samples...";
@@ -101,7 +101,12 @@ fn render_header(frame: &mut Frame, area: ratatui::prelude::Rect) {
     frame.render_widget(subtitle, chunks[1]);
 }
 
-fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, view_model: &ViewModel, app_state: &ApplicationState) {
+fn render_right(
+    frame: &mut Frame,
+    area: ratatui::prelude::Rect,
+    view_model: &ViewModel,
+    app_state: &ApplicationState,
+) {
     let mut right_block = Block::default()
         .title(RIGHT_TITLE)
         .borders(Borders::ALL)
@@ -161,13 +166,20 @@ fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, view_model: &Vi
 }
 
 fn render_footer(frame: &mut Frame, area: ratatui::prelude::Rect, view_model: &ViewModel) {
-    let footer = Paragraph::new(Line::from(vec![Span::raw(view_model.status_message.clone())]))
-        .alignment(Alignment::Center)
-        .block(Block::default().borders(Borders::NONE));
+    let footer = Paragraph::new(Line::from(vec![Span::raw(
+        view_model.status_message.clone(),
+    )]))
+    .alignment(Alignment::Center)
+    .block(Block::default().borders(Borders::NONE));
     frame.render_widget(footer, area);
 }
 
-fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, _view_model: &ViewModel, app_state: &ApplicationState) {
+fn render_pads(
+    frame: &mut Frame,
+    area: ratatui::prelude::Rect,
+    _view_model: &ViewModel,
+    app_state: &ApplicationState,
+) {
     // Determine grid based on number of pads
     let total = app_state.pads.key_to_slot.len().max(1);
     let cols = total.clamp(1, 10) as u16; // cap columns for readability
@@ -248,7 +260,12 @@ fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, _view_model: &Vi
     }
 }
 
-fn render_summary_box(frame: &mut Frame, area: Rect, view_model: &ViewModel, app_state: &ApplicationState) {
+fn render_summary_box(
+    frame: &mut Frame,
+    area: Rect,
+    view_model: &ViewModel,
+    app_state: &ApplicationState,
+) {
     // Base green frame consistent with pads styling
     let border_style = Style::default().fg(Color::Green);
 
@@ -376,7 +393,12 @@ fn render_summary_box(frame: &mut Frame, area: Rect, view_model: &ViewModel, app
     frame.render_widget(values, right);
 }
 
-fn render_popup(frame: &mut Frame, area: Rect, view_model: &ViewModel, _app_state: &ApplicationState) {
+fn render_popup(
+    frame: &mut Frame,
+    area: Rect,
+    view_model: &ViewModel,
+    _app_state: &ApplicationState,
+) {
     let content = PopupContent { view_model };
     let popup = Popup::new(content)
         .title(Line::from("Configure tempo & loop").centered())

@@ -42,7 +42,6 @@ pub struct KeyModifiers {
     pub alt: bool,
 }
 
-
 /// Input action DTO representing user input events.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputAction {
