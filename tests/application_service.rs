@@ -46,7 +46,7 @@ fn handle_input_with_space_key_in_pads_mode() {
     // Enter pads mode first
     app_state.selection.add_file(std::path::PathBuf::from("test.wav"));
     let _ = app_state.enter_pads();
-    view_model.mode = termigroove::app_state::Mode::Pads;
+    view_model.mode = termigroove::presentation::Mode::Pads;
 
     let service = AppService::new(tx);
     let input_action = InputAction::KeyPressed {
@@ -54,7 +54,7 @@ fn handle_input_with_space_key_in_pads_mode() {
         modifiers: KeyModifiers::default(),
     };
 
-    let effects = service
+    let _effects = service
         .handle_input(&mut app_state, &mut view_model, input_action)
         .expect("handle input");
 
@@ -68,7 +68,7 @@ fn handle_input_with_char_key_in_pads_mode_produces_audio_effect() {
     // Enter pads mode and set up a pad mapping
     app_state.selection.add_file(std::path::PathBuf::from("test.wav"));
     let _ = app_state.enter_pads();
-    view_model.mode = termigroove::app_state::Mode::Pads;
+    view_model.mode = termigroove::presentation::Mode::Pads;
 
     // Ensure we're not in recording state so audio effect is produced
     // (The loop should be idle initially)
@@ -100,8 +100,8 @@ fn handle_input_with_esc_in_pads_mode() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
     app_state.selection.add_file(std::path::PathBuf::from("test.wav"));
     let _ = app_state.enter_pads();
-    view_model.mode = termigroove::app_state::Mode::Pads;
-    assert!(matches!(view_model.mode, termigroove::app_state::Mode::Pads));
+    view_model.mode = termigroove::presentation::Mode::Pads;
+    assert!(matches!(view_model.mode, termigroove::presentation::Mode::Pads));
 
     let service = AppService::new(tx);
     let input_action = InputAction::KeyPressed {
@@ -114,7 +114,7 @@ fn handle_input_with_esc_in_pads_mode() {
         .expect("handle input");
 
     // Esc should cancel loop and return to browse mode with status message
-    assert!(matches!(view_model.mode, termigroove::app_state::Mode::Browse));
+    assert!(matches!(view_model.mode, termigroove::presentation::Mode::Browse));
     assert!(!effects.is_empty());
     assert!(effects.iter().any(|e| matches!(e, Effect::StatusMessage(_))));
 }
@@ -173,7 +173,7 @@ fn handle_input_with_control_space_in_pads_mode() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
     app_state.selection.add_file(std::path::PathBuf::from("test.wav"));
     let _ = app_state.enter_pads();
-    view_model.mode = termigroove::app_state::Mode::Pads;
+    view_model.mode = termigroove::presentation::Mode::Pads;
 
     let service = AppService::new(tx);
     let input_action = InputAction::KeyPressed {
@@ -211,7 +211,7 @@ fn handle_input_with_enter_in_browse_mode() {
 
     // Enter should attempt to enter pads mode
     // Effects may be empty or contain preload commands
-    assert!(matches!(view_model.mode, termigroove::app_state::Mode::Pads));
+    assert!(matches!(view_model.mode, termigroove::presentation::Mode::Pads));
 }
 
 #[test]
@@ -242,7 +242,7 @@ fn service_methods_are_idempotent() {
 #[test]
 fn handle_input_with_up_key_in_left_explorer_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::LeftExplorer;
+    view_model.focus = termigroove::presentation::FocusPane::LeftExplorer;
 
     let service = AppService::new(tx);
     let input_action = InputAction::KeyPressed {
@@ -264,7 +264,7 @@ fn handle_input_with_up_key_in_left_explorer_focus() {
 #[test]
 fn handle_input_with_space_key_in_left_explorer_focus_selects_file() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::LeftExplorer;
+    view_model.focus = termigroove::presentation::FocusPane::LeftExplorer;
     // Set up a file (not directory) as current item
     view_model.current_left_item = Some(std::path::PathBuf::from("test.wav"));
     view_model.current_left_is_dir = false;
@@ -289,7 +289,7 @@ fn handle_input_with_space_key_in_left_explorer_focus_selects_file() {
 #[test]
 fn handle_input_with_space_key_on_directory_shows_error() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::LeftExplorer;
+    view_model.focus = termigroove::presentation::FocusPane::LeftExplorer;
     // Set up a directory as current item
     view_model.current_left_item = Some(std::path::PathBuf::from("test_dir"));
     view_model.current_left_is_dir = true;
@@ -316,7 +316,7 @@ fn handle_input_with_space_key_on_directory_shows_error() {
 #[test]
 fn handle_input_with_up_key_in_right_selected_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::RightSelected;
+    view_model.focus = termigroove::presentation::FocusPane::RightSelected;
     // Add some files to selection
     app_state.selection.add_file(std::path::PathBuf::from("file1.wav"));
     app_state.selection.add_file(std::path::PathBuf::from("file2.wav"));
@@ -344,7 +344,7 @@ fn handle_input_with_up_key_in_right_selected_focus() {
 #[test]
 fn handle_input_with_down_key_in_right_selected_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::RightSelected;
+    view_model.focus = termigroove::presentation::FocusPane::RightSelected;
     // Add some files to selection
     app_state.selection.add_file(std::path::PathBuf::from("file1.wav"));
     app_state.selection.add_file(std::path::PathBuf::from("file2.wav"));
@@ -372,7 +372,7 @@ fn handle_input_with_down_key_in_right_selected_focus() {
 #[test]
 fn handle_input_with_delete_key_in_right_selected_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::RightSelected;
+    view_model.focus = termigroove::presentation::FocusPane::RightSelected;
     // Add some files to selection
     app_state.selection.add_file(std::path::PathBuf::from("file1.wav"));
     app_state.selection.add_file(std::path::PathBuf::from("file2.wav"));
@@ -397,7 +397,7 @@ fn handle_input_with_delete_key_in_right_selected_focus() {
 #[test]
 fn handle_input_with_d_key_in_right_selected_focus() {
     let (mut app_state, mut view_model, tx) = setup_test_state();
-    view_model.focus = termigroove::app_state::FocusPane::RightSelected;
+    view_model.focus = termigroove::presentation::FocusPane::RightSelected;
     // Add some files to selection
     app_state.selection.add_file(std::path::PathBuf::from("file1.wav"));
     app_state.selection.add_file(std::path::PathBuf::from("file2.wav"));

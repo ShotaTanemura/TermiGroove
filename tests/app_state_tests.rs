@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::sync::mpsc;
 
-use termigroove::app_state::PopupFocus;
+use termigroove::presentation::PopupFocus;
 use termigroove::application::state::ApplicationState;
 use termigroove::audio::{SenderAudioBus, SystemClock};
 use termigroove::domain::r#loop::LoopEngine;

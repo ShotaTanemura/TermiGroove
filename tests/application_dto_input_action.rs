@@ -60,7 +60,8 @@ fn test_keymodifiers_empty() {
     assert!(!dto_mods.control);
     assert!(!dto_mods.shift);
     assert!(!dto_mods.alt);
-    assert!(dto_mods.is_empty());
+    // All modifiers should be false when empty
+    assert!(!dto_mods.control && !dto_mods.shift && !dto_mods.alt);
 }
 
 #[test]
@@ -70,7 +71,6 @@ fn test_keymodifiers_control() {
     assert!(dto_mods.control);
     assert!(!dto_mods.shift);
     assert!(!dto_mods.alt);
-    assert!(dto_mods.contains_control());
 }
 
 #[test]
@@ -109,7 +109,8 @@ fn test_event_key_pressed() {
     match input_action {
         InputAction::KeyPressed { key, modifiers } => {
             assert_eq!(key, DtoKeyCode::Char('a'));
-            assert!(modifiers.is_empty());
+            // All modifiers should be false when empty
+            assert!(!modifiers.control && !modifiers.shift && !modifiers.alt);
         }
         _ => panic!("Expected KeyPressed variant"),
     }
@@ -124,7 +125,7 @@ fn test_event_key_pressed_with_modifiers() {
     match input_action {
         InputAction::KeyPressed { key, modifiers } => {
             assert_eq!(key, DtoKeyCode::Char(' '));
-            assert!(modifiers.contains_control());
+            assert!(modifiers.control);
         }
         _ => panic!("Expected KeyPressed variant"),
     }
