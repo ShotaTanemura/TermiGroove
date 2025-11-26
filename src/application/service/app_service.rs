@@ -241,7 +241,7 @@ impl AppService {
         app_state: &mut ApplicationState,
         view_model: &mut ViewModel,
         key: KeyCode,
-        _effects: &mut Vec<Effect>,
+        _effects: &mut [Effect],
     ) -> anyhow::Result<()> {
         use crate::presentation::PopupFocus;
         use ratatui::crossterm::event::Event;
@@ -293,25 +293,23 @@ impl AppService {
                 // Handle all other keys (including Char, Backspace, Delete, etc.) for text input
                 // Convert KeyCode to KeyEvent for TextInput handling
                 // This is a temporary workaround until we refactor TextInput to use InputAction
-                if let Ok(event) = self.keycode_to_event(key) {
-                    if let Event::Key(crossterm_key) = event {
-                        if let Some(req) = to_input_request(&Event::Key(crossterm_key)) {
-                            // Enforce digits-only input for InsertChar requests
-                            let should_apply = match req {
-                                InputRequest::InsertChar(ch) => ch.is_ascii_digit(),
-                                _ => true,
-                            };
-                            if should_apply {
-                                match view_model.popup_focus() {
-                                    PopupFocus::PopupFieldBpm => {
-                                        let _ = view_model.draft_bpm_mut().handle(req);
-                                    }
-                                    PopupFocus::PopupFieldBars => {
-                                        let _ = view_model.draft_bars_mut().handle(req);
-                                    }
-                                    _ => {}
-                                }
+                if let Ok(Event::Key(crossterm_key)) = self.keycode_to_event(key)
+                    && let Some(req) = to_input_request(&Event::Key(crossterm_key))
+                {
+                    // Enforce digits-only input for InsertChar requests
+                    let should_apply = match req {
+                        InputRequest::InsertChar(ch) => ch.is_ascii_digit(),
+                        _ => true,
+                    };
+                    if should_apply {
+                        match view_model.popup_focus() {
+                            PopupFocus::PopupFieldBpm => {
+                                let _ = view_model.draft_bpm_mut().handle(req);
                             }
+                            PopupFocus::PopupFieldBars => {
+                                let _ = view_model.draft_bars_mut().handle(req);
+                            }
+                            _ => {}
                         }
                     }
                 }
@@ -350,7 +348,7 @@ impl AppService {
         &self,
         view_model: &mut ViewModel,
         key: KeyCode,
-        _effects: &mut Vec<Effect>,
+        _effects: &mut [Effect],
     ) -> anyhow::Result<()> {
         // Convert KeyCode to Event::Key for FileExplorer
         let event = self.keycode_to_event(key)?;
