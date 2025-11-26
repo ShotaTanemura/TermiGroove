@@ -60,7 +60,6 @@ fn handle_input_with_space_key_in_pads_mode() {
 
     // Space key should trigger loop handling, which may produce effects
     // The exact effects depend on loop state, but we verify the method works
-    assert!(effects.is_empty() || !effects.is_empty()); // Just verify it doesn't panic
 }
 
 #[test]
