@@ -14,5 +14,6 @@
 //! - Does not depend on: Presentation layer (`crate::ui`), Infrastructure layer (`crate::audio`)
 
 pub mod dto;
+pub mod ports;
 pub mod service;
 pub mod state;
