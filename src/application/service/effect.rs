@@ -29,12 +29,3 @@ impl From<AudioCommand> for Effect {
     }
 }
 
-impl Effect {
-    /// Convert this effect to an AudioCommand if it is one, otherwise None.
-    pub fn as_audio_command(&self) -> Option<&AudioCommand> {
-        match self {
-            Effect::AudioCommand(cmd) => Some(cmd),
-            Effect::StatusMessage(_) => None,
-        }
-    }
-}
