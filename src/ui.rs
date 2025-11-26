@@ -12,22 +12,24 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tui_big_text::{BigText, PixelSize};
 use tui_popup::{Popup, SizedWidgetRef};
 
-use crate::app_state::{AppState, FocusPane, Mode, PopupFocus};
+use crate::app_state::{FocusPane, Mode, PopupFocus};
+use crate::application::state::ApplicationState;
 use crate::domain::r#loop::LoopState;
+use crate::presentation::ViewModel;
 
 const HEADER_TITLE: &str = "WELCOME TO TERMIGROOVE";
 const HEADER_SUBTITLE: &str = "Load your samples...";
 const RIGHT_TITLE: &str = "Selected (Enter = To Pads)";
 
-pub fn draw_ui(frame: &mut Frame, state: &AppState) {
-    match state.mode {
+pub fn draw_ui(frame: &mut Frame, view_model: &ViewModel, app_state: &ApplicationState) {
+    match view_model.mode {
         Mode::Browse => {
             let (header_area, body_area, footer_area) = vertical_layout(frame);
             render_header(frame, header_area);
             let (left_area, right_area) = body_layout(body_area);
-            frame.render_widget(&state.file_explorer.widget(), left_area);
-            render_right(frame, right_area, state);
-            render_footer(frame, footer_area, state);
+            frame.render_widget(&view_model.file_explorer.widget(), left_area);
+            render_right(frame, right_area, view_model, app_state);
+            render_footer(frame, footer_area, view_model);
         }
         Mode::Pads => {
             let size = frame.area();
@@ -42,11 +44,11 @@ pub fn draw_ui(frame: &mut Frame, state: &AppState) {
             let summary_area = chunks[0];
             let body_area = chunks[1];
             let footer_area = chunks[2];
-            render_summary_box(frame, summary_area, state);
-            render_pads(frame, body_area, state);
-            render_footer(frame, footer_area, state);
-            if state.is_bpm_popup_open() {
-                render_popup(frame, size, state);
+            render_summary_box(frame, summary_area, view_model, app_state);
+            render_pads(frame, body_area, view_model, app_state);
+            render_footer(frame, footer_area, view_model);
+            if view_model.is_bpm_popup_open() {
+                render_popup(frame, size, view_model, app_state);
             }
         }
     }
@@ -99,7 +101,7 @@ fn render_header(frame: &mut Frame, area: ratatui::prelude::Rect) {
     frame.render_widget(subtitle, chunks[1]);
 }
 
-fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState) {
+fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, view_model: &ViewModel, app_state: &ApplicationState) {
     let mut right_block = Block::default()
         .title(RIGHT_TITLE)
         .borders(Borders::ALL)
@@ -111,7 +113,7 @@ fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppStat
             bottom: 0,
         });
 
-    if matches!(state.focus, FocusPane::RightSelected) {
+    if matches!(view_model.focus, FocusPane::RightSelected) {
         right_block = right_block.border_style(
             Style::default()
                 .fg(Color::Green)
@@ -120,7 +122,7 @@ fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppStat
     }
 
     // Render names (not paths) using a stateful List with a visible cursor highlight
-    let items: Vec<ListItem> = state
+    let items: Vec<ListItem> = app_state
         .selection
         .items
         .iter()
@@ -150,24 +152,24 @@ fn render_right(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppStat
         .highlight_symbol("▶ ");
 
     let mut list_state = ListState::default();
-    if !state.selection.items.is_empty() {
-        list_state.select(Some(state.selection.right_idx));
+    if !app_state.selection.items.is_empty() {
+        list_state.select(Some(app_state.selection.right_idx));
     } else {
         list_state.select(None);
     }
     frame.render_stateful_widget(list, area, &mut list_state);
 }
 
-fn render_footer(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState) {
-    let footer = Paragraph::new(Line::from(vec![Span::raw(state.status_message.clone())]))
+fn render_footer(frame: &mut Frame, area: ratatui::prelude::Rect, view_model: &ViewModel) {
+    let footer = Paragraph::new(Line::from(vec![Span::raw(view_model.status_message.clone())]))
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::NONE));
     frame.render_widget(footer, area);
 }
 
-fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState) {
+fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, _view_model: &ViewModel, app_state: &ApplicationState) {
     // Determine grid based on number of pads
-    let total = state.pads.key_to_slot.len().max(1);
+    let total = app_state.pads.key_to_slot.len().max(1);
     let cols = total.clamp(1, 10) as u16; // cap columns for readability
     let rows = ((total as f32) / (cols as f32)).ceil() as u16;
 
@@ -184,7 +186,7 @@ fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState
         .split(area);
 
     // Flatten key/slot items in a stable order
-    let items: Vec<(char, String)> = state
+    let items: Vec<(char, String)> = app_state
         .pads
         .key_to_slot
         .iter()
@@ -212,7 +214,7 @@ fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Green));
             // Active highlight (revert after 150ms from last press)
-            let is_active = state
+            let is_active = app_state
                 .pads
                 .last_press_ms
                 .get(key)
@@ -246,7 +248,7 @@ fn render_pads(frame: &mut Frame, area: ratatui::prelude::Rect, state: &AppState
     }
 }
 
-fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
+fn render_summary_box(frame: &mut Frame, area: Rect, view_model: &ViewModel, app_state: &ApplicationState) {
     // Base green frame consistent with pads styling
     let border_style = Style::default().fg(Color::Green);
 
@@ -270,7 +272,7 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
 
     // Focus ring when SummaryBox is focused (drawn outside of the text area)
     let is_selected = matches!(
-        state.popup_focus(),
+        view_model.popup_focus(),
         PopupFocus::PopupFieldBpm
             | PopupFocus::PopupFieldBars
             | PopupFocus::PopupOk
@@ -284,7 +286,7 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
             Style::default().fg(Color::Green),
             Some(Style::default().bg(selected_fill)),
         )
-    } else if matches!(state.popup_focus(), PopupFocus::SummaryBox) {
+    } else if matches!(view_model.popup_focus(), PopupFocus::SummaryBox) {
         (
             Borders::ALL,
             Style::default()
@@ -338,15 +340,15 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
 
     let mut value_lines = vec![
         Line::from(Span::styled(
-            state.get_bpm().to_string(),
+            app_state.get_bpm().to_string(),
             Style::default().fg(Color::Green),
         )),
         Line::from(Span::styled(
-            state.get_bars().to_string(),
+            app_state.get_bars().to_string(),
             Style::default().fg(Color::Green),
         )),
     ];
-    let (label, style) = match state.loop_state() {
+    let (label, style) = match app_state.loop_state() {
         LoopState::Paused { .. } => (
             "PAUSED",
             Style::default()
@@ -374,8 +376,8 @@ fn render_summary_box(frame: &mut Frame, area: Rect, state: &AppState) {
     frame.render_widget(values, right);
 }
 
-fn render_popup(frame: &mut Frame, area: Rect, state: &AppState) {
-    let content = PopupContent { state };
+fn render_popup(frame: &mut Frame, area: Rect, view_model: &ViewModel, _app_state: &ApplicationState) {
+    let content = PopupContent { view_model };
     let popup = Popup::new(content)
         .title(Line::from("Configure tempo & loop").centered())
         .style(Style::default().bg(Color::Rgb(51, 114, 50)))
@@ -388,7 +390,7 @@ fn render_popup(frame: &mut Frame, area: Rect, state: &AppState) {
 
 #[derive(Debug)]
 struct PopupContent<'a> {
-    state: &'a AppState,
+    view_model: &'a ViewModel,
 }
 
 impl<'a> SizedWidgetRef for PopupContent<'a> {
@@ -445,15 +447,15 @@ impl<'a> ratatui::widgets::WidgetRef for PopupContent<'a> {
             buf,
             rows[0],
             "bpm",
-            self.state.draft_bpm().value(),
-            matches!(self.state.popup_focus(), PopupFocus::PopupFieldBpm,),
+            self.view_model.draft_bpm().value(),
+            matches!(self.view_model.popup_focus(), PopupFocus::PopupFieldBpm,),
         );
         render_popup_input_row(
             buf,
             rows[1],
             "bars",
-            self.state.draft_bars().value(),
-            matches!(self.state.popup_focus(), PopupFocus::PopupFieldBars,),
+            self.view_model.draft_bars().value(),
+            matches!(self.view_model.popup_focus(), PopupFocus::PopupFieldBars,),
         );
 
         let button_row = Layout::default()
@@ -470,13 +472,13 @@ impl<'a> ratatui::widgets::WidgetRef for PopupContent<'a> {
             buf,
             button_row[1],
             "[ OK ]",
-            matches!(self.state.popup_focus(), PopupFocus::PopupOk),
+            matches!(self.view_model.popup_focus(), PopupFocus::PopupOk),
         );
         render_popup_button(
             buf,
             button_row[2],
             "[ Cancel ]",
-            matches!(self.state.popup_focus(), PopupFocus::PopupCancel),
+            matches!(self.view_model.popup_focus(), PopupFocus::PopupCancel),
         );
     }
 }

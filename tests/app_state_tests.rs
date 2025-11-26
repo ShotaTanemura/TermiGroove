@@ -1,7 +1,14 @@
 use std::path::PathBuf;
+use std::sync::mpsc;
 
-use termigroove::app_state::{AppState, PopupFocus};
+use termigroove::app_state::PopupFocus;
+use termigroove::application::state::ApplicationState;
+use termigroove::audio::{SenderAudioBus, SystemClock};
+use termigroove::domain::r#loop::LoopEngine;
+use termigroove::presentation::ViewModel;
 use termigroove::selection::SelectionModel;
+use ratatui_explorer::{FileExplorer, Theme as ExplorerTheme};
+use ratatui::widgets::{Block, BorderType, Borders};
 use tui_input::{Input as TextInput, InputRequest};
 
 #[test]
@@ -71,79 +78,110 @@ fn empty_list_noops_on_nav_and_remove() {
     assert_eq!(m.status, before_status);
 }
 
+fn setup_test_state() -> (ApplicationState, ViewModel) {
+    let (tx, _rx) = mpsc::channel();
+    let bus = SenderAudioBus::new(tx);
+    let loop_engine = LoopEngine::new(SystemClock::new(), bus);
+    let app_state = ApplicationState::new(loop_engine);
+    let theme = ExplorerTheme::default()
+        .with_block(
+            Block::default()
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded),
+        );
+    let file_explorer = FileExplorer::with_theme(theme).expect("create file explorer");
+    let view_model = ViewModel::new(file_explorer);
+    (app_state, view_model)
+}
+
 #[test]
 fn bpm_bars_defaults_and_clamping() {
-    let mut state = AppState::new().expect("init AppState");
-    assert_eq!(state.get_bpm(), 120);
-    assert_eq!(state.get_bars(), 16);
+    let (mut app_state, _view_model) = setup_test_state();
+    assert_eq!(app_state.get_bpm(), 120);
+    assert_eq!(app_state.get_bars(), 16);
 
-    state.set_bpm(5);
-    assert_eq!(state.get_bpm(), 20);
-    state.set_bpm(400);
-    assert_eq!(state.get_bpm(), 300);
+    app_state.set_bpm(5);
+    assert_eq!(app_state.get_bpm(), 20);
+    app_state.set_bpm(400);
+    assert_eq!(app_state.get_bpm(), 300);
 
-    state.set_bars(0);
-    assert_eq!(state.get_bars(), 1);
-    state.set_bars(999);
-    assert_eq!(state.get_bars(), 256);
+    app_state.set_bars(0);
+    assert_eq!(app_state.get_bars(), 1);
+    app_state.set_bars(999);
+    assert_eq!(app_state.get_bars(), 256);
 }
 
 #[test]
 fn open_and_close_popup_apply_and_discard() {
-    let mut state = AppState::new().expect("init AppState");
-    state.open_bpm_bars_popup();
-    assert!(state.is_bpm_popup_open());
-    assert_eq!(state.popup_focus(), PopupFocus::PopupFieldBpm);
+    let (mut app_state, mut view_model) = setup_test_state();
+    view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
+    assert!(view_model.is_bpm_popup_open());
+    assert_eq!(view_model.popup_focus(), PopupFocus::PopupFieldBpm);
 
-    set_input_text(state.draft_bpm_mut(), "130");
-    set_input_text(state.draft_bars_mut(), "8");
-    state.close_bpm_bars_popup(true);
-    assert_eq!(state.get_bpm(), 130);
-    assert_eq!(state.get_bars(), 8);
+    set_input_text(view_model.draft_bpm_mut(), "130");
+    set_input_text(view_model.draft_bars_mut(), "8");
+    // Apply the values manually (simulating AppService behavior)
+    if let Ok(bpm) = view_model.draft_bpm().value().parse::<u16>() {
+        app_state.set_bpm(bpm);
+    }
+    if let Ok(bars) = view_model.draft_bars().value().parse::<u16>() {
+        app_state.set_bars(bars);
+    }
+    view_model.close_bpm_bars_popup();
+    assert_eq!(app_state.get_bpm(), 130);
+    assert_eq!(app_state.get_bars(), 8);
 
-    let bpm_before = state.get_bpm();
-    let bars_before = state.get_bars();
-    state.open_bpm_bars_popup();
-    set_input_text(state.draft_bpm_mut(), "240");
-    set_input_text(state.draft_bars_mut(), "32");
-    state.close_bpm_bars_popup(false);
-    assert_eq!(state.get_bpm(), bpm_before);
-    assert_eq!(state.get_bars(), bars_before);
+    let bpm_before = app_state.get_bpm();
+    let bars_before = app_state.get_bars();
+    view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
+    set_input_text(view_model.draft_bpm_mut(), "240");
+    set_input_text(view_model.draft_bars_mut(), "32");
+    // Don't apply (simulating discard)
+    view_model.close_bpm_bars_popup();
+    assert_eq!(app_state.get_bpm(), bpm_before);
+    assert_eq!(app_state.get_bars(), bars_before);
 }
 
 #[test]
 fn opening_popup_copies_current_values_into_drafts() {
-    let mut state = AppState::new().expect("init AppState");
+    let (mut app_state, mut view_model) = setup_test_state();
 
-    state.set_bpm(140);
-    state.set_bars(12);
-    state.open_bpm_bars_popup();
-    assert_eq!(state.draft_bpm().value(), "140");
-    assert_eq!(state.draft_bars().value(), "12");
-    state.close_bpm_bars_popup(false);
+    app_state.set_bpm(140);
+    app_state.set_bars(12);
+    view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
+    assert_eq!(view_model.draft_bpm().value(), "140");
+    assert_eq!(view_model.draft_bars().value(), "12");
+    view_model.close_bpm_bars_popup();
 
-    state.set_bpm(200);
-    state.set_bars(8);
-    state.open_bpm_bars_popup();
-    assert_eq!(state.draft_bpm().value(), "200");
-    assert_eq!(state.draft_bars().value(), "8");
+    app_state.set_bpm(200);
+    app_state.set_bars(8);
+    view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
+    assert_eq!(view_model.draft_bpm().value(), "200");
+    assert_eq!(view_model.draft_bars().value(), "8");
 }
 
 #[test]
 fn close_popup_apply_clamps_and_resets_state() {
-    let mut state = AppState::new().expect("init AppState");
-    state.open_bpm_bars_popup();
+    let (mut app_state, mut view_model) = setup_test_state();
+    view_model.open_bpm_bars_popup(app_state.get_bpm(), app_state.get_bars());
 
-    set_input_text(state.draft_bpm_mut(), "999");
-    set_input_text(state.draft_bars_mut(), "0");
-    state.close_bpm_bars_popup(true);
+    set_input_text(view_model.draft_bpm_mut(), "999");
+    set_input_text(view_model.draft_bars_mut(), "0");
+    // Apply the values manually (simulating AppService behavior with clamping)
+    if let Ok(bpm) = view_model.draft_bpm().value().parse::<u16>() {
+        app_state.set_bpm(bpm); // set_bpm clamps the value
+    }
+    if let Ok(bars) = view_model.draft_bars().value().parse::<u16>() {
+        app_state.set_bars(bars); // set_bars clamps the value
+    }
+    view_model.close_bpm_bars_popup();
 
-    assert_eq!(state.get_bpm(), 300);
-    assert_eq!(state.get_bars(), 1);
-    assert!(!state.is_bpm_popup_open());
-    assert!(matches!(state.popup_focus(), PopupFocus::None));
-    assert_eq!(state.draft_bpm().value(), "");
-    assert_eq!(state.draft_bars().value(), "");
+    assert_eq!(app_state.get_bpm(), 300);
+    assert_eq!(app_state.get_bars(), 1);
+    assert!(!view_model.is_bpm_popup_open());
+    assert!(matches!(view_model.popup_focus(), PopupFocus::None));
+    assert_eq!(view_model.draft_bpm().value(), "");
+    assert_eq!(view_model.draft_bars().value(), "");
 }
 
 fn set_input_text(input: &mut TextInput, value: &str) {

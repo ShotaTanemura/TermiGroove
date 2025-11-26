@@ -11,7 +11,7 @@ use std::time::{Duration, Instant};
 
 use crate::domain::ports::{AudioBus, Clock};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum AudioCommand {
     Preload { key: char, path: PathBuf },
     Play { key: char },
