@@ -15,5 +15,4 @@
 pub mod app_service;
 pub mod effect;
 
-pub use app_service::AppService;
 pub use effect::Effect;
