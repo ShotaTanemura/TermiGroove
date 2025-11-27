@@ -136,9 +136,15 @@ fn test_file_entry_is_dir_property() {
     let navigator = view_model.as_navigator();
 
     if let Some(entry) = navigator.selected_entry() {
-        // The is_dir flag should reflect the actual file system state
-        // We can't know what the first entry is, but we can verify the flag is set
-        let _ = entry.is_dir; // Just verify it's accessible
+        // Verify is_dir matches actual file system state
+        let metadata = std::fs::metadata(&entry.path)
+            .expect("Should be able to get metadata for selected entry");
+        assert_eq!(
+            entry.is_dir,
+            metadata.is_dir(),
+            "is_dir should match file system state for {:?}",
+            entry.path
+        );
     }
 }
 
