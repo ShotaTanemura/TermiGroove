@@ -7,6 +7,8 @@
 //! This state is managed by the presentation layer and can be mutated by
 //! presentation components (e.g., effect handlers).
 
+use crate::application::ports::FileNavigator;
+use crate::presentation::file_explorer_adapter::FileExplorerAdapter;
 use ratatui_explorer::FileExplorer;
 use std::path::PathBuf;
 use tui_input::Input as TextInput;
@@ -185,5 +187,14 @@ impl ViewModel {
             PopupFocus::PopupCancel => PopupFocus::PopupOk,
             _ => PopupFocus::PopupOk,
         };
+    }
+
+    /// Get a FileNavigator adapter for the file explorer.
+    ///
+    /// This returns an adapter that implements the `FileNavigator` trait,
+    /// allowing the application layer to interact with the file explorer
+    /// without depending on the concrete `FileExplorer` type.
+    pub fn as_navigator(&mut self) -> impl FileNavigator + '_ {
+        FileExplorerAdapter::new(&mut self.file_explorer)
     }
 }

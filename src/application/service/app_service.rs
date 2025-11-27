@@ -7,6 +7,7 @@
 //! it remains reusable and testable without holding internal state.
 
 use crate::application::dto::input_action::{InputAction, KeyCode, KeyModifiers};
+use crate::application::ports::FileNavigator;
 use crate::application::service::effect::Effect;
 use crate::application::state::ApplicationState;
 use crate::audio::AudioCommand;
@@ -319,8 +320,8 @@ impl AppService {
         Ok(())
     }
 
-    /// Temporary helper to convert KeyCode back to Event::Key for FileExplorer.
-    /// TODO: Abstract FileExplorer behind a trait to avoid this dependency.
+    /// Temporary helper to convert KeyCode back to Event::Key for TextInput.
+    /// TODO: Abstract TextInput behind a trait to avoid this dependency.
     fn keycode_to_event(&self, key: KeyCode) -> anyhow::Result<Event> {
         let crossterm_key = match key {
             KeyCode::Tab => CrosstermKeyCode::Tab,
@@ -350,15 +351,18 @@ impl AppService {
         key: KeyCode,
         _effects: &mut [Effect],
     ) -> anyhow::Result<()> {
-        // Convert KeyCode to Event::Key for FileExplorer
-        let event = self.keycode_to_event(key)?;
-        view_model.file_explorer.handle(&event)?;
+        // Use FileNavigator trait to handle navigation
+        {
+            let mut navigator = view_model.as_navigator();
+            navigator.handle_navigation_key(key)?;
+        }
 
-        // Update current_left_item based on explorer selection
-        let idx = view_model.file_explorer.selected_idx();
-        if let Some(entry) = view_model.file_explorer.files().get(idx) {
-            view_model.current_left_item = Some(entry.path().to_path_buf());
-            view_model.current_left_is_dir = entry.is_dir();
+        // Update current_left_item based on navigator selection
+        // Note: We need to get the navigator again after the mutable borrow ends
+        let selected = view_model.as_navigator().selected_entry();
+        if let Some(entry) = selected {
+            view_model.current_left_item = Some(entry.path);
+            view_model.current_left_is_dir = entry.is_dir;
         }
         Ok(())
     }
